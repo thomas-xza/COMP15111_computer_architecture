@@ -1,0 +1,37 @@
+
+
+Q1) After executing the "LDR R0" instruction, the value of PC is (?) and of R0
+is (?)
+
+Q2) After executing the "LDR R1" instruction, the value of PC is (?) and of R1
+is (?)
+
+Q3) After executing the "LDR R2" instruction, the value of PC is (?) and of R2
+is (?)
+
+
+(For Q4 and Q5, we are asking about the registers involved in the arithmetic,
+not PC/R15)
+
+Q4) The first time the "MUL" instruction is executed, the value of register (?)
+changes from (?) to (?)
+
+Q5) The first time the "SUB" instruction is executed, the value of register (?)
+changes from (?) to (?)
+
+
+(For Q6, Q7, and Q8, we are asking about the effect of running the program
+from the beginning until it stops at the SVC instruction, not about the
+effect of just one instruction)
+
+Q6) the "BEQ" instruction (in the loop) is executed (?) times but only performs the branch (?)
+times
+
+Q7) register (?) counts down from (?) to (?)
+
+Q8) which arithemtic operation does the program implement? (write down the equation)
+
+
+Q9) Optimize the two branch instructions - within the loop - by replacing them with one instruction. 
+You must maintain the same functionality of the whole program. Write down the new instruction.
+(?)
