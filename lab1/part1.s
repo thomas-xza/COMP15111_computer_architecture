@@ -3,7 +3,7 @@
 	LDR	R2, c
 	LDR	R3, d
 	LDR R4, zero
-  CMP R1, R4
+    CMP R1, R4
 	BEQ end
 	MOV R3, R1
 	MOV R5, R0
@@ -17,7 +17,7 @@ loop
 end
 	SVC 2
 x	DEFW	2
-y DEFW  10
+y   DEFW  10
 c	DEFW	1
 d	DEFW	0
 zero DEFW 0
