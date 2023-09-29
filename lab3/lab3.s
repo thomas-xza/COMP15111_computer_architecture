@@ -1,6 +1,6 @@
 ;be default it will branch to label 'part1'
 
-	B part3 ; part1 or part2 or part3
+	B part1 ; part1 or part2 or part3
 
 
 
