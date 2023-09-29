@@ -19,12 +19,12 @@ wasborn		DEFB	"This person was born on ",0
 was		DEFB	"This person was ",0
 on		DEFB	" on ",0
 is		DEFB	"This person is ",0
-today		DEFB	" today!",0
-willbe		DEFB	"This person will be ",0
+today	DEFB	" today!",0
+willbe	DEFB	"This person will be ",0
 		ALIGN
 
 pDay		  DEFW	23		;  pDay = 23    //or whatever is today's date
-pMonth		DEFW	11		;  pMonth = 11  //or whatever is this month
+pMonth		  DEFW	11		;  pMonth = 11  //or whatever is this month
 pYear		  DEFW	2005	;  pYear = 2005 //or whatever is this year
 
 
@@ -46,44 +46,44 @@ sYear DEFW	2000
 printAgeHistory
 
     PUSH	{R6}			; callee saves three registers
-		PUSH	{R5}
-		PUSH	{R4}
+	PUSH	{R5}
+	PUSH	{R4}
 
 ;for part 1
 ;replace the PUSH instructions given above with one STMFD instruction
 
 
 
-		LDR	R6, [SP, #(3 + 2) * 4]	; Get parameters from stack
-		LDR	R1, [SP, #(3 + 1) * 4]
-		LDR	R2, [SP, #(3 + 0) * 4]
+	LDR	R6, [SP, #(3 + 2) * 4]	; Get parameters from stack
+	LDR	R1, [SP, #(3 + 1) * 4]
+	LDR	R2, [SP, #(3 + 0) * 4]
 
 ;   year = bYear + 1
-		ADD	R4, R2, #1
+	ADD	R4, R2, #1
 ;   age = 1;
-		MOV	R5, #1
+	MOV	R5, #1
     MOV	R8, #1
 
 ; print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear))
-		ADRL	R0, wasborn
-		SVC	print_str
-		MOV	R0, R6
-		SVC	print_no
-		MOV	R0, #'/'
-		SVC	print_char
-		MOV	R0, R1
-		SVC	print_no
-		MOV	R0, #'/'
-		SVC	print_char
-		MOV	R0, R2
-		SVC	print_no
-		MOV	R0, #cLF
-		SVC	print_char
+	ADRL	R0, wasborn
+	SVC	print_str
+	MOV	R0, R6
+	SVC	print_no
+	MOV	R0, #'/'
+	SVC	print_char
+	MOV	R0, R1
+	SVC	print_no
+	MOV	R0, #'/'
+	SVC	print_char
+	MOV	R0, R2
+	SVC	print_no
+	MOV	R0, #cLF
+	SVC	print_char
 
 ; this code does: while year < pYear //{
 loop1	LDR	R0, pYear
-		CMP	R4, R0
-		BHS	end1		; Years are unsigned
+	CMP	R4, R0
+	BHS	end1		; Years are unsigned
 ; for part 4, should be changed to:
 ; while year < pYear or
 ;				(year == pYear and bMonth < pMonth) or
@@ -126,8 +126,8 @@ loop1	LDR	R0, pYear
 
 		; year = year + 1
 		ADD	R4, R4, #1
-    ADD	R8, R4, #1
-    ADD	R9, R8, #1
+       ADD	R8, R4, #1
+       ADD	R9, R8, #1
 		; age = age + 1
 		ADD	R5, R5, #1
 		; //}
@@ -248,7 +248,7 @@ main
 
 
 
-    POP	{R0}			; Deallocate three 32-bit variables
+        POP	{R0}			; Deallocate three 32-bit variables
 		POP	{R0}
 		POP	{R0}
 

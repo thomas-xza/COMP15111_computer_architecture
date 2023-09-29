@@ -55,10 +55,10 @@ stringLength
 ;R2 must contain the length of the string
 ; don't remove these lines
   MOV  R0,R2
-	SVC  4
+  SVC  4
   MOV  R0, #10
-	SVC  0
-	MOV  PC, LR
+  SVC  0
+  MOV  PC, LR
 
 
 
@@ -67,7 +67,7 @@ printstringReverse
 
 ;Your code goes here replacing the 2 lines given below
   MOV  R0,R1
-	SVC  3
+  SVC  3
 
 
 
@@ -85,12 +85,12 @@ stringCopy
 
 ;Your code goes here replacing the 2 lines given below
   MOV  R0,R1
-	SVC  3
+  SVC  3
 
 
 
 ; don't remove this line
-	MOV  PC, LR	; given
+  MOV  PC, LR	; given
 
 
 
@@ -98,132 +98,132 @@ stringCopy
 part1
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s1
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   ADR R1, s1
   BL stringLength
 
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s2
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s3
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s4
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s5
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s6
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s7
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s8
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
 
   ADR R1, strsize
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R1, s9
   MOV  R0,R1
-	SVC  3
+  SVC  3
   ADR R2, is
   MOV  R0,R2
-	SVC  3
+  SVC  3
   BL stringLength
   SVC 2
 
 
 part2	ADR R1, s1
-	BL  printstringReverse
-	ADR R1, s2
-	BL  printstringReverse
-	ADR R1, s3
-	BL  printstringReverse
-	ADR R1, s4
-	BL  printstringReverse
-	ADR R1, s5
-	BL  printstringReverse
-	ADR R1, s6
-	BL  printstringReverse
-	ADR R1, s7
-	BL  printstringReverse
-	ADR R1, s8
-	BL  printstringReverse
-	ADR R1, s9
-	BL  printstringReverse
-	SVC 2
+  BL  printstringReverse
+  ADR R1, s2
+  BL  printstringReverse
+  ADR R1, s3
+  BL  printstringReverse
+  ADR R1, s4
+  BL  printstringReverse
+  ADR R1, s5
+  BL  printstringReverse
+  ADR R1, s6
+  BL  printstringReverse
+  ADR R1, s7
+  BL  printstringReverse
+  ADR R1, s8
+  BL  printstringReverse
+  ADR R1, s9
+  BL  printstringReverse
+  SVC 2
 
 
 part3	ADR R1, s8
   ADR R2, s9
   ADR R3, buffer
-	BL  stringCopy
+  BL  stringCopy
   ADR R1, buffer
   BL printstring
 
