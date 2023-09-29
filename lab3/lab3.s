@@ -1,4 +1,4 @@
-;be default it will branch to label 'part1'
+;by default it will branch to label 'part1'
 
 	B part1 ; part1 or part2 or part3
 
