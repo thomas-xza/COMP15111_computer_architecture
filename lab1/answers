@@ -1,37 +1,169 @@
 
-
 Q1) After executing the "LDR R0" instruction, the value of PC is (?) and of R0
 is (?)
+
+r0 = 0x0002
+PC = 0x0004
+
 
 Q2) After executing the "LDR R1" instruction, the value of PC is (?) and of R1
 is (?)
 
+r1 = 0x000A
+PC = 0x0008
+
+
 Q3) After executing the "LDR R2" instruction, the value of PC is (?) and of R2
 is (?)
+
+r2 = 0x0001
+PC = 0x0008
 
 
 (For Q4 and Q5, we are asking about the registers involved in the arithmetic,
 not PC/R15)
 
+
 Q4) The first time the "MUL" instruction is executed, the value of register (?)
 changes from (?) to (?)
 
+r5 = 0x0000
+r5 = 0x0002
+
+
 Q5) The first time the "SUB" instruction is executed, the value of register (?)
 changes from (?) to (?)
+
+r3 = 0x000A
+r3 = 0x0009
 
 
 (For Q6, Q7, and Q8, we are asking about the effect of running the program
 from the beginning until it stops at the SVC instruction, not about the
 effect of just one instruction)
 
-Q6) the "BEQ" instruction (in the loop) is executed (?) times but only performs the branch (?)
-times
+
+Q6) the "BEQ" instruction (in the loop) is executed (?) times but only
+performs the branch (?)  times
+
+The BEQ instruction at memory location 0x0034 is executed 9 times.
+
+It performs the branch 1 time only (after r3 gradually deincrements
+until it is equal to 1).
+
 
 Q7) register (?) counts down from (?) to (?)
 
+r3 initially holds the value of d (0x0000).
+However, the value of r1, which is y (0x000A) is copied to r3.
+
+The value of r3 is then 0x000A (0d10).
+Then, a loop repeats, which begins at 0x0024.
+The value of r3 gradually deincrements due to the instruction:
+  SUB r3, r3, #1
+The loop breaks when the value of r3 is equal to 0x0001 due to the
+instruction:
+  CMP r3, #1
+
+
 Q8) which arithemtic operation does the program implement? (write down the equation)
 
+void main() {
 
-Q9) Optimize the two branch instructions - within the loop - by replacing them with one instruction. 
-You must maintain the same functionality of the whole program. Write down the new instruction.
+    int r0 = 2;
+    int r1 = 10;
+    int r2 = 1;
+    int r3 = 0;
+    int r4 = 0;
+    int r5 = 0;
+
+    if (r1 == r4) {
+
+	  return 0;
+
+    } else {
+
+	r3 = r1;
+
+	r5 = r0;
+
+	while (r3 != 1) {
+
+	    r5 = r5 * r0;
+
+	    ##  line to store r5 to 0x004 here ??
+
+	    r3 = r3 - 1;
+
+	}
+
+    }
+
+}
+
+
+Q9) Optimize the two branch instructions - within the loop - by
+replacing them with one instruction.  You must maintain the same
+functionality of the whole program. Write down the new instruction.
 (?)
+
+Much of the Assembly can be cut back, whilst still maintaining the
+same result.
+
+void main() {
+
+    int r0 = 2;
+    int r5 = r0
+
+    int r1 = 10;
+    int r3 = r1;
+
+    int r2 = 1;
+    int r4 = 0;
+
+    while (r3 != 1) {
+
+	    r5 = r5 * r0;
+
+	    ##  line to store r5 to 0x004 here ??
+
+	    r3 = r3 - 1;
+
+	}
+
+    }
+
+}
+
+LDR	r0, x
+
+MOV	r5, r0
+
+LDR	r1, y
+
+MOV	r3, r1
+
+LDR	r2, c
+
+LDR	r4, zero
+
+loop
+MUL	r5, r5, r0
+
+STR	r5, c
+
+SUB	r3, r3, #1
+
+CMP	r3, #1
+
+BEQ	end
+
+B	loop
+
+end
+SVC2
+
+x	DEFW 2
+y	DEFW 10
+c	DEFW 1
+zero	DEFW 0
