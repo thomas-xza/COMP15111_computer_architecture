@@ -17,7 +17,7 @@ Q3) After executing the "LDR R2" instruction, the value of PC is (?) and of R2
 is (?)
 
 r2 = 0x0001
-PC = 0x0008
+PC = 0x000C
 
 
 (For Q4 and Q5, we are asking about the registers involved in the arithmetic,
@@ -27,8 +27,8 @@ not PC/R15)
 Q4) The first time the "MUL" instruction is executed, the value of register (?)
 changes from (?) to (?)
 
-r5 = 0x0000
 r5 = 0x0002
+r5 = 0x0004
 
 
 Q5) The first time the "SUB" instruction is executed, the value of register (?)
@@ -48,17 +48,18 @@ performs the branch (?)  times
 
 The BEQ instruction at memory location 0x0034 is executed 9 times.
 
-It performs the branch 1 time only (after r3 gradually deincrements
-until it is equal to 1).
+It performs the branch 1 time only, after the following instruction
+evaluates to equal:
+  CMP r3, #1
 
 
 Q7) register (?) counts down from (?) to (?)
 
-r3 initially holds the value of d (0x0000).
+r3 initially loads the value of d (0x0000).
 However, the value of r1, which is y (0x000A) is copied to r3.
 
 The value of r3 is then 0x000A (0d10).
-Then, a loop repeats, which begins at 0x0024.
+Then, a loop repeats, which begins at address 0x0024.
 The value of r3 gradually deincrements due to the instruction:
   SUB r3, r3, #1
 The loop breaks when the value of r3 is equal to 0x0001 due to the
@@ -108,7 +109,7 @@ functionality of the whole program. Write down the new instruction.
 (?)
 
 Much of the Assembly can be cut back, whilst still maintaining the
-same result.
+same result. Maybe `end` should be defined as an address?
 
 void main() {
 
