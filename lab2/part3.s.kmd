@@ -1,0 +1,190 @@
+KMD
+00000000: EA000042    ; B main
+00000004:             ; 
+00000004:             ; 
+00000004: 00000000    ; x DEFW 0
+00000008: 00000000    ; y DEFW 0
+0000000C: 00000000    ; z DEFW 0
+00000010: 00000000    ; operation DEFW 0
+00000014:             ; 
+00000014:             ; 
+00000014: 4E 6F 74 65 ; op0     DEFB    "Note: this calculator has no overflow detection as Bennett does not allow acce
+00000018: 3A 20 74 68 ; ss to the CPSR register (so that we could AND bits 27, 28 of the CPSR register).  \0"
+0000001C: 69 73 20 63 ; 
+00000020: 61 6C 63 75 ; 
+00000024: 6C 61 74 6F ; 
+00000028: 72 20 68 61 ; 
+0000002C: 73 20 6E 6F ; 
+00000030: 20 6F 76 65 ; 
+00000034: 72 66 6C 6F ; 
+00000038: 77 20 64 65 ; 
+0000003C: 74 65 63 74 ; 
+00000040: 69 6F 6E 20 ; 
+00000044: 61 73 20 42 ; 
+00000048: 65 6E 6E 65 ; 
+0000004C: 74 74 20 64 ; 
+00000050: 6F 65 73 20 ; 
+00000054: 6E 6F 74 20 ; 
+00000058: 61 6C 6C 6F ; 
+0000005C: 77 20 61 63 ; 
+00000060: 63 65 73 73 ; 
+00000064: 20 74 6F 20 ; 
+00000068: 74 68 65 20 ; 
+0000006C: 43 50 53 52 ; 
+00000070: 20 72 65 67 ; 
+00000074: 69 73 74 65 ; 
+00000078: 72 20 28 73 ; 
+0000007C: 6F 20 74 68 ; 
+00000080: 61 74 20 77 ; 
+00000084: 65 20 63 6F ; 
+00000088: 75 6C 64 20 ; 
+0000008C: 41 4E 44 20 ; 
+00000090: 62 69 74 73 ; 
+00000094: 20 32 37 2C ; 
+00000098: 20 32 38 20 ; 
+0000009C: 6F 66 20 74 ; 
+000000A0: 68 65 20 43 ; 
+000000A4: 50 53 52 20 ; 
+000000A8: 72 65 67 69 ; 
+000000AC: 73 74 65 72 ; 
+000000B0: 29 2E 20 20 ; 
+000000B4: 00          ; 
+000000B5: 4F 70 65 72 ; op1     DEFB    "Operand 1:  \0"
+000000B9: 61 6E 64 20 ; 
+000000BD: 31 3A 20 20 ; 
+000000C1: 00          ; 
+000000C2: 4F 70 65 72 ; op2     DEFB    "Operand 2:  \0"
+000000C6: 61 6E 64 20 ; 
+000000CA: 32 3A 20 20 ; 
+000000CE: 00          ; 
+000000CF: 50 6C 65 61 ; op3     DEFB    "Please select your operation (+,-,e):  \0"
+000000D3: 73 65 20 73 ; 
+000000D7: 65 6C 65 63 ; 
+000000DB: 74 20 79 6F ; 
+000000DF: 75 72 20 6F ; 
+000000E3: 70 65 72 61 ; 
+000000E7: 74 69 6F 6E ; 
+000000EB: 20 28 2B 2C ; 
+000000EF: 2D 2C 65 29 ; 
+000000F3: 3A 20 20 00 ; 
+000000F7: 52 65 73 75 ; op4     DEFB    "Result of operation:  \0"
+000000FB: 6C 74 20 6F ; 
+000000FF: 66 20 6F 70 ; 
+00000103: 65 72 61 74 ; 
+00000107: 69 6F 6E 3A ; 
+0000010B: 20 20 00    ; 
+0000010E:             ; 
+00000110:             ;         ALIGN
+00000110:             ; 
+00000110:             ;         
+00000110:             ; main
+00000110:             ; 
+00000110: E3A00000    ;         MOV R0, #0              ; empty main register
+00000114: E24F0F42    ;         ADR R0, op0             ; move PC to location of op0
+00000118: EF000003    ;         SVC 3                   ; output r0 as string
+0000011C:             ; 
+0000011C:             ; input_operands
+0000011C: E3A0000A    ;         MOV R0, #10             ; load newline (ASCII '\n')
+00000120: EF000000    ;         SVC 0
+00000124:             ; 
+00000124:             ; 
+00000124: E24F0077    ;         ADR R0, op1             ; move PC to location of op1
+00000128: EF000003    ;         SVC 3                   ; output r0 as string
+0000012C:             ; 
+0000012C:             ; 
+0000012C: EF000005    ;         SVC 5                   ; input int to r0;
+00000130: E50F0134    ;         STR R0, x       
+00000134:             ;         ;;  ADD R1, R0, #0      ; r1 = r0
+00000134:             ; 
+00000134:             ; 
+00000134: E24F007A    ;         ADR R0, op2             ; move PC to location of op2
+00000138: EF000003    ;         SVC 3                   ; output r0 as string
+0000013C:             ; 
+0000013C:             ; 
+0000013C: EF000005    ;         SVC 5                   ; input int to r0               
+00000140: E50F0140    ;         STR R0, y
+00000144:             ;         ;; ADD R2, R0, #0 r2 = r0
+00000144:             ; 
+00000144:             ; 
+00000144:             ; input_operation
+00000144: E24F007D    ;         ADR R0, op3             ; move PC to location of op3
+00000148: EF000003    ;         SVC 3                   ; output r0 as string
+0000014C:             ; 
+0000014C:             ; 
+0000014C: EF000001    ;         SVC 1                   ; input char
+00000150: EF000000    ;         SVC 0                   ; output char entered
+00000154: E50F014C    ;         STR R0, operation
+00000158:             ; 
+00000158:             ; 
+00000158:             ; load_data
+00000158: E51F115C    ;         LDR R1, x
+0000015C: E51F215C    ;         LDR R2, y
+00000160: E51F4158    ;         LDR R4, operation
+00000164:             ; 
+00000164:             ;         
+00000164:             ; early_exit_check        
+00000164: E3A00065    ;         MOV R0, #101            ; load 101 (ASCII 'e')
+00000168: E1500004    ;         CMP R0, R4
+0000016C: 0A000012    ;         BEQ end
+00000170:             ; 
+00000170:             ;         
+00000170:             ; output_begin
+00000170: E3A0000A    ;         MOV R0, #10             ; load newline (ASCII '\n')
+00000174: EF000000    ;         SVC 0
+00000178: E24F0089    ;         ADR R0, op4             ; move PC to location of op4
+0000017C: EF000003    ;         SVC 3                   ; output r0 as string
+00000180:             ; 
+00000180:             ; 
+00000180:             ; operand_branching
+00000180: E3A0002B    ;         MOV R0, #43             ; load 43 (ASCII '+')
+00000184: E1500004    ;         CMP R0, R4
+00000188: 0A000003    ;         BEQ addition
+0000018C:             ; 
+0000018C: E3A0002D    ;         MOV R0, #45             ; load 45 (ASCII '-')
+00000190: E1500004    ;         CMP R0, R4
+00000194: 0A000004    ;         BEQ subtraction
+00000198:             ; 
+00000198:             ;         
+00000198: EAFFFFDF    ;         B input_operands
+0000019C:             ; 
+0000019C:             ; 
+0000019C:             ; addition
+0000019C: E0810002    ;         ADD R0, R1, R2          ; r0 = r1 + r2
+000001A0: E50F019C    ;         STR R0, z
+000001A4: EF000004    ;         SVC 4                   ; output r0 as integer
+000001A8: EAFFFFDB    ;         B input_operands
+000001AC:             ; 
+000001AC:             ;         
+000001AC:             ; subtraction
+000001AC: E0410002    ;         SUB R0, R1, R2          ; r0 = r1 + r2
+000001B0: E50F01AC    ;         STR R0, z
+000001B4:             ;         ;; AND R0, CPSR, #134217728     ;  apparently CPSR is not accessible within bennett
+000001B4: EF000004    ;         SVC 4                   ; output r0 as integer
+000001B8: EAFFFFD7    ;         B input_operands
+000001BC:             ; 
+000001BC:             ; 
+000001BC:             ; end
+000001BC: EF000002    ;         SVC 2                   ; stop the program
+000001C0:             ; 
+000001C0:             ; 
+
+Symbol Table: Labels
+: x                                 00000004  Local -- ARM
+: y                                 00000008  Local -- ARM
+: z                                 0000000C  Local -- ARM
+: operation                         00000010  Local -- ARM
+: op0                               00000014  Local -- ARM
+: op1                               000000B5  Local -- ARM
+: op2                               000000C2  Local -- ARM
+: op3                               000000CF  Local -- ARM
+: op4                               000000F7  Local -- ARM
+: main                              00000110  Local -- ARM
+: input_operands                    0000011C  Local -- ARM
+: input_operation                   00000144  Local -- ARM
+: load_data                         00000158  Local -- ARM
+: early_exit_check                  00000164  Local -- ARM
+: output_begin                      00000170  Local -- ARM
+: operand_branching                 00000180  Local -- ARM
+: addition                          0000019C  Local -- ARM
+: subtraction                       000001AC  Local -- ARM
+: end                               000001BC  Local -- ARM
