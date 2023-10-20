@@ -1,0 +1,6 @@
+SVC 0 = output a character;
+SVC 1 = input a character;
+SVC 2 = stop;
+SVC 3 = output a string;
+SVC 4 = output an integer in decimal format
+SVC 5 = input an integer in decimal format
