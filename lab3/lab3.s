@@ -132,17 +132,19 @@ reverse_process			;  branches back to here
 	
 byte_loop_out
 
-	LDRB R0, [R3], #-1	;  deincrement address within r3 by 1, load contents to r0
+	;; LDRB R0, [R3], ; #-1 deincrement address within r3 by 1, load contents to r0
+	LDRB R0, [R3], #-1	;  there may be a more RISC-like way to do this
 	SVC 0			
 
-	MOV  R0, #10		;  output newline
-	SVC  0	
+	;; MOV  R0, #10		;  output newline
+	;; SVC  0	
 	
 	ADD R4, R4, #-1
 	
 	CMP R4, #0		;  compare r4 with 0, store result in CPSR
 	BNE byte_loop_out	; using CPSR comparison bit, branch/not to byte_loop_count
 
+	LDRB R0, [R3], #-1
 	SVC 0
 
 	
