@@ -1,8 +1,12 @@
-;by default it will branch to label 'part1'
+				;by default it will branch to label 'part1'
 
-	B part2; part1 or part2 or part3
+B part1; part1 or part2 or part3
 
 
+;;;   Comment out the "SVC 2" lines at the end to test all fast
+;;;     Note that part2 reuses some functionality from part1 (with links)
+;;;     This is against the spec but, I learnt more
+	
 
 buffer	DEFS 100,0
 
@@ -62,7 +66,7 @@ stringLength
 	;;    2. Bitshift right 8 times, AND the last position with 1
 	;;  		- This is a big reverse engineering effort, but learn some Assembly I guess
 
-	;;  But LSR also doesn't work
+	;;  But LSR also doesn't work in Bennett
 	;;  Nonetheless they all go back to CMP
 
 	;;  Lecture notes imply some branch instructions can indirectly access CPSR register.
@@ -92,14 +96,13 @@ stringLength
 byte_loop_count
 	
 	ADD R2, R2, #1		; add 1 to r2
-	LDRB R8, [R1], #1	; load byte from r1 to r8 and increment PC
+	LDRB R8, [R1], #1	; load byte from r1 to r8 and increment R1
 	CMP R8, #0		; compare r8 with 0, store result in CPSR
 	MOV R3, R1		; store for later reuse
 	BNE byte_loop_count	; using CPSR comparison bit, branch/not to byte_loop_count
 
 	ADD R2, R2, #-1		; deincrement the extra counter (Ahmed gave this away in lecture)
-
-	ADD R3, R3, #-1
+	ADD R3, R3, #-1		; deincrement the final byte position
 	
 ;R2 must contain the length of the string
 ; don't remove these lines
@@ -114,8 +117,14 @@ byte_loop_count
 ;************************** part 2 **************************
 printstringReverse
 
+
+;;;   Sorry, I wasn't interested in following the exact specification
+;;;   Mark me down if you like, it doesn't bother me, the points aren't worth anything!
+
+
 ;;;   Note that this function expects that the string to print is in R1
 ;;;   And that R2 is unused
+	
 
 	MOV R12, LR		;  put address of callee in R12
 
@@ -125,38 +134,36 @@ printstringReverse
 	
 reverse_process			;  branches back to here
 
+	;;;   R3 now contains the address of the end of the string
+	;;;   R2 now contains the length of the string
+
 	MOV r4, r2		;  copy r2 to r4 (contains string length)
 	
-        ADR R0, pause           ; move PC to location of op4
-        SVC 3                   ; output r0 as string	
+        ;; ADR R0, pause           ; move PC to location of op4
+        ;; SVC 3                   ; output r0 as string	
 	
 byte_loop_out
 
-	;; LDRB R0, [R3], ; #-1 deincrement address within r3 by 1, load contents to r0
-	LDRB R0, [R3], #-1	;  there may be a more RISC-like way to do this
+
+	;; LDRB R0, [R3], #-1	; #-1 deincrement address within r3 by 1, load contents of r3 to r0
+	LDRB R0, [R3], #-1	;  Should be 2 separate instructions, arguably - more RISC like
 	SVC 0			
 
-	;; MOV  R0, #10		;  output newline
-	;; SVC  0	
-	
 	ADD R4, R4, #-1
 	
 	CMP R4, #0		;  compare r4 with 0, store result in CPSR
-	BNE byte_loop_out	; using CPSR comparison bit, branch/not to byte_loop_count
+	BNE byte_loop_out	;  using CPSR comparison bit, branch/don't to byte_loop_out
 
-	LDRB R0, [R3], #-1
+	LDRB R0, [R3], #-1	;  load final char
 	SVC 0
 
+	MOV  R0, #10		;  output newline
+	SVC  0	
+	
 	
 
 	MOV LR, R12		;  prepare to branch back to callee
 	
-	;; MOV R0, R2
-	;; SVC 4
-	;; MOV R0, R1
-	;; SVC 3
-
-
 
 
 
@@ -168,9 +175,58 @@ byte_loop_out
 ;************************** part 3 ***************************
 stringCopy
 					;Your code goes here replacing the 2 lines given below
-  MOV  R12,R2
-  SVC  3
 
+	
+;;;   RISC-V might be the future, ARM (and Intel) might be totally screwed someday.
+;;; 	There is no advantage to commit to it unless they choose to fund me (and potentially
+;;; 	oversubscribed). I have to hedge my bets.
+;;;   Also, Bennett is not a joy to work with.
+
+stringCopy_init
+	
+	MOV R12, LR		;  put address of callee in R12	
+	
+	ADR R3, buffer
+	
+
+byte_loop_strcopy
+
+	LDRB R4, [R1], #1	;  load byte from R1 to R4 and increment R1
+	STRB R4, [R3], #1	;  store byte from R4 to R3 and increment R3
+	
+	;; MOV R0, R4
+	;; SVC 0
+	
+	CMP R4, #0		;  compare r8 with 0, store result in CPSR
+	BNE byte_loop_strcopy	;  using CPSR comparison bit, branch/not to byte_loop_count
+
+
+
+concat_string_out_init
+
+	MOV R4, #0
+	LDRB R4, [R3], #-1
+
+	
+byte_loop_strjoin
+
+	LDRB R4, [R2], #1	;  load byte from R1 to R4 and increment R1
+	STRB R4, [R3], #1	;  store byte from R4 to R3 and increment R3
+	
+	;; MOV R0, R4
+	;; SVC 0
+	
+	CMP R4, #0		;  compare r8 with 0, store result in CPSR
+	BNE byte_loop_strjoin	;  using CPSR comparison bit, branch/not to byte_loop_count
+
+
+
+stringCopy_ending
+
+	
+	MOV LR, R12		;  address of R12 in LR (prepare to branch back to callee)
+	
+	
 
 
 ; don't remove this line
@@ -314,4 +370,3 @@ part3	ADR R1, s8
   SVC 2
 
 
-	
