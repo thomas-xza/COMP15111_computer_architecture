@@ -31,6 +31,10 @@ s8	DEFB "COMP15111 \0"
 s9	DEFB "Fundamentals of Computer Architecture\0"
 	ALIGN
 
+pause     DEFB    "PAUSE EXECUTION"
+	ALIGN
+
+
 printstring
 	MOV  R0,R1
 	SVC  3
@@ -46,15 +50,8 @@ stringLength
 ; R2 must contain the length of the string.
 ;by default R2 contains integer value zero, you need to write a
 ;piece of assembly code to calculate the length of the string pointed by R1
-;your code goes here
-	
-  MOV R2,#0           ;len = 0
-                        ;while string[len:]:
-                        ;   len =len+ 1
+				;your code goes here
 
-	;;  contents of R1 = string
-
-	
 	;;  MOV R2, #4294967295
 	;;  STR R3, all_ones		;;  Doesn't work
 
@@ -66,32 +63,43 @@ stringLength
 	;;  		- This is a big reverse engineering effort, but learn some Assembly I guess
 
 	;;  But LSR also doesn't work
-	;;	So...
+	;;  Nonetheless they all go back to CMP
 
 	;;  Lecture notes imply some branch instructions can indirectly access CPSR register.
 	
-	;;  The truth is, I don't like videos/powerpoints... I have only been reading course texts.
+	;;  The truth is, I don't like videos/powerpoints, so I have only been reading course texts.
 
 	;;  But you have to just follow the template course, because Bennett is a limited emulator.
 	;;  	Understand Christos' dismay with Bennett now.
 
+
+;;;  A CALL TO `stringLength` EXITS WITH
+;;;    length as integer in r2
+;;;    position of last byte in r3
+
+	
+  MOV R2,#0           ;len = 0
+                        ;while string[len:]:
+                        ;   len =len+ 1
+
+	;;  contents of R1 = string
+
+	
 
 	MOV R2, #0
 
 	
 byte_loop_count
 	
+	ADD R2, R2, #1		; add 1 to r2
 	LDRB R8, [R1], #1	; load byte from r1 to r8 and increment PC
 	CMP R8, #0		; compare r8 with 0, store result in CPSR
-	ADD R2, R2, #1		; add 1 to r2
-	;; MOV R0, R8
-	;; SVC 0
+	MOV R3, R1		; store for later reuse
 	BNE byte_loop_count	; using CPSR comparison bit, branch/not to byte_loop_count
 
-	
 	ADD R2, R2, #-1		; deincrement the extra counter (Ahmed gave this away in lecture)
 
-
+	ADD R3, R3, #-1
 	
 ;R2 must contain the length of the string
 ; don't remove these lines
@@ -106,23 +114,42 @@ byte_loop_count
 ;************************** part 2 **************************
 printstringReverse
 
-
 ;;;   Note that this function expects that the string to print is in R1
 ;;;   And that R2 is unused
 
-	MOV R12, LR
+	MOV R12, LR		;  put address of callee in R12
 
-	ADR LR, reverse_process
+	ADR LR, reverse_process ;  put address of reverse_process in LR (for later return)
 
-	B stringLength		; get the string length, return to this line
+	B stringLength		;  branch off to get the string length
+	
+reverse_process			;  branches back to here
 
-reverse_process
-	MOV R0, R8
+	MOV r4, r2		;  copy r2 to r4 (contains string length)
+	
+        ADR R0, pause           ; move PC to location of op4
+        SVC 3                   ; output r0 as string	
+	
+byte_loop_out
+
+	LDRB R0, [R3], #-1	;  deincrement address within r3 by 1, load contents to r0
+	SVC 0			
+
+	MOV  R0, #10		;  output newline
+	SVC  0	
+	
+	ADD R4, R4, #-1
+	
+	CMP R4, #0		;  compare r4 with 0, store result in CPSR
+	BNE byte_loop_out	; using CPSR comparison bit, branch/not to byte_loop_count
+
 	SVC 0
 
-	MOV LR, R12
 	
-	;; MOV R0, R2		; 
+
+	MOV LR, R12		;  prepare to branch back to callee
+	
+	;; MOV R0, R2
 	;; SVC 4
 	;; MOV R0, R1
 	;; SVC 3
@@ -283,3 +310,6 @@ part3	ADR R1, s8
   BL printstring
 
   SVC 2
+
+
+	
