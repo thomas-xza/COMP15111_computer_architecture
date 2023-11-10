@@ -51,26 +51,40 @@ stringLength
                         ;while string[len:]:
                         ;   len =len+ 1
 
-	;; contents of R1 = string
+	;;  contents of R1 = string
+
 	
-	LDRB R0, [R1], #1
-	SVC 0
-	MOV  R0, #10
-	SVC 0
-	LDRB R0, [R1], #1
-	SVC 0
-	MOV  R0, #10
-	SVC 0
-	LDRB R0, [R1], #1
-	SVC 0
-	MOV  R0, #10
-	SVC 0
-	LDRB R0, [R1], #1
-	SVC 0
-	MOV  R0, #10
-	SVC 0
-	LDRB R0, [R1], #1
-	SVC 0
+	;;  MOV R2, #4294967295
+	;;  STR R3, all_ones		;;  Doesn't work
+
+	;;  CMP and AND doesn't work, as cannot access CPSR register (Bennett restriction)
+	
+	;;  Other ideas:
+	;;    1. AND each bit individually
+	;;    2. Bitshift right 8 times, AND the last position with 1
+	;;  		- This is a big reverse engineering effort, but learn some Assembly I guess
+
+	;;  But LSR also doesn't work
+	;;	So...
+
+	;;  Lecture notes imply some instructions can indirectly access CPSR register
+	
+	;;	The truth is, I have been avoiding them because I don't like videos/presentations...
+	;;	I like books/texts!
+	
+
+	MOV R7, #0
+
+	
+char_loop_count
+	
+	LDRB R8, [R1], #1
+	CMP R8, #0
+	ADD R7, R7, #1
+	BNE char_loop_count
+
+	
+	ADD R7, R7, #-1		;;  Ahmed gave this one away, in the live lecture
 
 
 	
