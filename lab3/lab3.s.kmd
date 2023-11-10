@@ -1,7 +1,7 @@
 KMD
 00000000:             ; ;by default it will branch to label 'part1'
 00000000:             ; 
-00000000: EA000052    ;         B part1 ; part1 or part2 or part3
+00000000: EA0000B2    ;         B part2; part1 or part2 or part3
 00000004:             ; 
 00000004:             ; 
 00000004:             ; 
@@ -94,6 +94,7 @@ KMD
 00000100:             ; ;by default R2 contains integer value zero, you need to write a
 00000100:             ; ;piece of assembly code to calculate the length of the string pointed by R1
 00000100:             ; ;your code goes here
+00000100:             ;         
 00000100: E3A02000    ;   MOV R2,#0           ;len = 0
 00000104:             ;                         ;while string[len:]:
 00000104:             ;                         ;   len =len+ 1
@@ -115,25 +116,31 @@ KMD
 00000104:             ;         ;;  But LSR also doesn't work
 00000104:             ;         ;;      So...
 00000104:             ; 
-00000104:             ;         ;;  Lecture notes imply some instructions can indirectly access CPSR register
+00000104:             ;         ;;  Lecture notes imply some branch instructions can indirectly access CPSR register.
 00000104:             ;         
-00000104:             ;         ;;      The truth is, I have been avoiding them because I don't like videos/presentatio
-                      ; ns...
-00000104:             ;         ;;      I like books/texts!
-00000104:             ;         
+00000104:             ;         ;;  The truth is, I don't like videos/powerpoints... I have only been reading course te
+                      ; xts.
 00000104:             ; 
-00000104: E3A07000    ;         MOV R7, #0
+00000104:             ;         ;;  But you have to just follow the template course, because Bennett is a limited emula
+                      ; tor.
+00000104:             ;         ;;      Understand Christos' dismay with Bennett now.
+00000104:             ; 
+00000104:             ; 
+00000104: E3A02000    ;         MOV R2, #0
 00000108:             ; 
 00000108:             ;         
-00000108:             ; s_chk
+00000108:             ; byte_loop_count
 00000108:             ;         
-00000108: E4D18001    ;         LDRB R8, [R1], #1
-0000010C: E3580000    ;         CMP R8, #0
-00000110: E2877001    ;         ADD R7, R7, #1
-00000114: 1AFFFFFB    ;         BNE s_chk
+00000108: E4D18001    ;         LDRB R8, [R1], #1       ; load byte from r1 to r8 and increment PC
+0000010C: E3580000    ;         CMP R8, #0              ; compare r8 with 0, store result in CPSR
+00000110: E2822001    ;         ADD R2, R2, #1          ; add 1 to r2
+00000114:             ;         ;; MOV R0, R8
+00000114:             ;         ;; SVC 0
+00000114: 1AFFFFFB    ;         BNE byte_loop_count     ; using CPSR comparison bit, branch/not to byte_loop_count
 00000118:             ; 
 00000118:             ;         
-00000118: E2477001    ;         ADD R7, R7, #-1
+00000118: E2422001    ;         ADD R2, R2, #-1         ; deincrement the extra counter (Ahmed gave this away in lectur
+                      ; e)
 0000011C:             ; 
 0000011C:             ; 
 0000011C:             ;         
@@ -150,170 +157,184 @@ KMD
 00000130:             ; ;************************** part 2 **************************
 00000130:             ; printstringReverse
 00000130:             ; 
-00000130:             ; ;Your code goes here replacing the 2 lines given below
-00000130: E1A00001    ;   MOV  R0,R1
-00000134: EF000003    ;   SVC  3
+00000130:             ; 
+00000130:             ; ;;;   Note that this function expects that the string to print is in R1
+00000130:             ; ;;;   And that R2 is unused
+00000130:             ; 
+00000130: E1A0C00E    ;         MOV R12, LR
+00000134:             ; 
+00000134: E28FE000    ;         ADR LR, reverse_process
 00000138:             ; 
-00000138:             ; 
-00000138:             ; 
-00000138:             ; 
-00000138:             ; 
-00000138:             ; 
-00000138:             ; 
-00000138:             ; ; don't remove these lines
-00000138: E3A0000A    ;         MOV  R0, #10    ; given - output end-of-line
-0000013C: EF000000    ;         SVC  0          ; given
-00000140: E1A0F00E    ;         MOV  PC, LR     ; given
+00000138: EAFFFFF0    ;         B stringLength          ; get the string length, return to this line
+0000013C:             ; 
+0000013C:             ; reverse_process
+0000013C: E1A00008    ;         MOV R0, R8
+00000140: EF000000    ;         SVC 0
 00000144:             ; 
-00000144:             ; ;************************** part 3 ***************************
-00000144:             ; stringCopy
-00000144:             ; 
-00000144:             ; ;Your code goes here replacing the 2 lines given below
-00000144: E1A00001    ;   MOV  R0,R1
-00000148: EF000003    ;   SVC  3
-0000014C:             ; 
-0000014C:             ; 
-0000014C:             ; 
-0000014C:             ; ; don't remove this line
-0000014C: E1A0F00E    ;   MOV  PC, LR   ; given
-00000150:             ; 
-00000150:             ; 
-00000150:             ; 
-00000150:             ; ;*********************** the various parts ********************
-00000150:             ; part1
-00000150: E24F10E8    ;   ADR R1, strsize
-00000154: E1A00001    ;   MOV  R0,R1
+00000144: E1A0E00C    ;         MOV LR, R12
+00000148:             ;         
+00000148:             ;         ;; MOV R0, R2           ; 
+00000148:             ;         ;; SVC 4
+00000148:             ;         ;; MOV R0, R1
+00000148:             ;         ;; SVC 3
+00000148:             ; 
+00000148:             ; 
+00000148:             ; 
+00000148:             ; 
+00000148:             ; 
+00000148:             ; ; don't remove these lines
+00000148: E3A0000A    ;         MOV  R0, #10    ; given - output end-of-line
+0000014C: EF000000    ;         SVC  0          ; given
+00000150: E1A0F00E    ;         MOV  PC, LR     ; given
+00000154:             ; 
+00000154:             ; ;************************** part 3 ***************************
+00000154:             ; stringCopy
+00000154:             ;                                         ;Your code goes here replacing the 2 lines given below
+00000154: E1A0C002    ;   MOV  R12,R2
 00000158: EF000003    ;   SVC  3
-0000015C: E24F10D8    ;   ADR R1, s1
-00000160: E1A00001    ;   MOV  R0,R1
-00000164: EF000003    ;   SVC  3
-00000168: E24F2F42    ;   ADR R2, is
-0000016C: E1A00002    ;   MOV  R0,R2
-00000170: EF000003    ;   SVC  3
-00000174: E24F10F0    ;   ADR R1, s1
-00000178: EBFFFFE0    ;   BL stringLength
-0000017C:             ; 
-0000017C:             ; 
-0000017C: E24F1F45    ;   ADR R1, strsize
-00000180: E1A00001    ;   MOV  R0,R1
-00000184: EF000003    ;   SVC  3
-00000188: E24F10FC    ;   ADR R1, s2
-0000018C: E1A00001    ;   MOV  R0,R1
-00000190: EF000003    ;   SVC  3
-00000194: E24F2F4D    ;   ADR R2, is
-00000198: E1A00002    ;   MOV  R0,R2
-0000019C: EF000003    ;   SVC  3
-000001A0: EBFFFFD6    ;   BL stringLength
-000001A4:             ; 
-000001A4: E24F1F4F    ;   ADR R1, strsize
-000001A8: E1A00001    ;   MOV  R0,R1
+0000015C:             ; 
+0000015C:             ; 
+0000015C:             ; 
+0000015C:             ; ; don't remove this line
+0000015C: E1A0F00E    ;   MOV  PC, LR   ; given
+00000160:             ; 
+00000160:             ; 
+00000160:             ; 
+00000160:             ; ;*********************** the various parts ********************
+00000160:             ; part1
+00000160: E24F10F8    ;   ADR R1, strsize
+00000164: E1A00001    ;   MOV  R0,R1
+00000168: EF000003    ;   SVC  3
+0000016C: E24F10E8    ;   ADR R1, s1
+00000170: E1A00001    ;   MOV  R0,R1
+00000174: EF000003    ;   SVC  3
+00000178: E24F2F46    ;   ADR R2, is
+0000017C: E1A00002    ;   MOV  R0,R2
+00000180: EF000003    ;   SVC  3
+00000184: E24F1C01    ;   ADR R1, s1
+00000188: EBFFFFDC    ;   BL stringLength
+0000018C:             ; 
+0000018C:             ; 
+0000018C: E24F1F49    ;   ADR R1, strsize
+00000190: E1A00001    ;   MOV  R0,R1
+00000194: EF000003    ;   SVC  3
+00000198: E24F1F43    ;   ADR R1, s2
+0000019C: E1A00001    ;   MOV  R0,R1
+000001A0: EF000003    ;   SVC  3
+000001A4: E24F2F51    ;   ADR R2, is
+000001A8: E1A00002    ;   MOV  R0,R2
 000001AC: EF000003    ;   SVC  3
-000001B0: E24F1E12    ;   ADR R1, s3
-000001B4: E1A00001    ;   MOV  R0,R1
-000001B8: EF000003    ;   SVC  3
-000001BC: E24F2F57    ;   ADR R2, is
-000001C0: E1A00002    ;   MOV  R0,R2
-000001C4: EF000003    ;   SVC  3
-000001C8: EBFFFFCC    ;   BL stringLength
-000001CC:             ; 
-000001CC: E24F1F59    ;   ADR R1, strsize
-000001D0: E1A00001    ;   MOV  R0,R1
+000001B0: EBFFFFD2    ;   BL stringLength
+000001B4:             ; 
+000001B4: E24F1F53    ;   ADR R1, strsize
+000001B8: E1A00001    ;   MOV  R0,R1
+000001BC: EF000003    ;   SVC  3
+000001C0: E24F1E13    ;   ADR R1, s3
+000001C4: E1A00001    ;   MOV  R0,R1
+000001C8: EF000003    ;   SVC  3
+000001CC: E24F2F5B    ;   ADR R2, is
+000001D0: E1A00002    ;   MOV  R0,R2
 000001D4: EF000003    ;   SVC  3
-000001D8: E24F1D05    ;   ADR R1, s4
-000001DC: E1A00001    ;   MOV  R0,R1
-000001E0: EF000003    ;   SVC  3
-000001E4: E24F2F61    ;   ADR R2, is
-000001E8: E1A00002    ;   MOV  R0,R2
-000001EC: EF000003    ;   SVC  3
-000001F0: EBFFFFC2    ;   BL stringLength
-000001F4:             ; 
-000001F4: E24F1F63    ;   ADR R1, strsize
-000001F8: E1A00001    ;   MOV  R0,R1
+000001D8: EBFFFFC8    ;   BL stringLength
+000001DC:             ; 
+000001DC: E24F1F5D    ;   ADR R1, strsize
+000001E0: E1A00001    ;   MOV  R0,R1
+000001E4: EF000003    ;   SVC  3
+000001E8: E24F1E15    ;   ADR R1, s4
+000001EC: E1A00001    ;   MOV  R0,R1
+000001F0: EF000003    ;   SVC  3
+000001F4: E24F2F65    ;   ADR R2, is
+000001F8: E1A00002    ;   MOV  R0,R2
 000001FC: EF000003    ;   SVC  3
-00000200: E24F1E16    ;   ADR R1, s5
-00000204: E1A00001    ;   MOV  R0,R1
-00000208: EF000003    ;   SVC  3
-0000020C: E24F2F6B    ;   ADR R2, is
-00000210: E1A00002    ;   MOV  R0,R2
-00000214: EF000003    ;   SVC  3
-00000218: EBFFFFB8    ;   BL stringLength
-0000021C:             ; 
-0000021C: E24F1F6D    ;   ADR R1, strsize
-00000220: E1A00001    ;   MOV  R0,R1
+00000200: EBFFFFBE    ;   BL stringLength
+00000204:             ; 
+00000204: E24F1F67    ;   ADR R1, strsize
+00000208: E1A00001    ;   MOV  R0,R1
+0000020C: EF000003    ;   SVC  3
+00000210: E24F1E17    ;   ADR R1, s5
+00000214: E1A00001    ;   MOV  R0,R1
+00000218: EF000003    ;   SVC  3
+0000021C: E24F2F6F    ;   ADR R2, is
+00000220: E1A00002    ;   MOV  R0,R2
 00000224: EF000003    ;   SVC  3
-00000228: E24F1D06    ;   ADR R1, s6
-0000022C: E1A00001    ;   MOV  R0,R1
-00000230: EF000003    ;   SVC  3
-00000234: E24F2F75    ;   ADR R2, is
-00000238: E1A00002    ;   MOV  R0,R2
-0000023C: EF000003    ;   SVC  3
-00000240: EBFFFFAE    ;   BL stringLength
-00000244:             ; 
-00000244: E24F1F77    ;   ADR R1, strsize
-00000248: E1A00001    ;   MOV  R0,R1
+00000228: EBFFFFB4    ;   BL stringLength
+0000022C:             ; 
+0000022C: E24F1F71    ;   ADR R1, strsize
+00000230: E1A00001    ;   MOV  R0,R1
+00000234: EF000003    ;   SVC  3
+00000238: E24F1E19    ;   ADR R1, s6
+0000023C: E1A00001    ;   MOV  R0,R1
+00000240: EF000003    ;   SVC  3
+00000244: E24F2F79    ;   ADR R2, is
+00000248: E1A00002    ;   MOV  R0,R2
 0000024C: EF000003    ;   SVC  3
-00000250: E24F1F69    ;   ADR R1, s7
-00000254: E1A00001    ;   MOV  R0,R1
-00000258: EF000003    ;   SVC  3
-0000025C: E24F2F7F    ;   ADR R2, is
-00000260: E1A00002    ;   MOV  R0,R2
-00000264: EF000003    ;   SVC  3
-00000268: EBFFFFA4    ;   BL stringLength
-0000026C:             ; 
-0000026C: E24F1F81    ;   ADR R1, strsize
-00000270: E1A00001    ;   MOV  R0,R1
+00000250: EBFFFFAA    ;   BL stringLength
+00000254:             ; 
+00000254: E24F1F7B    ;   ADR R1, strsize
+00000258: E1A00001    ;   MOV  R0,R1
+0000025C: EF000003    ;   SVC  3
+00000260: E24F1F6D    ;   ADR R1, s7
+00000264: E1A00001    ;   MOV  R0,R1
+00000268: EF000003    ;   SVC  3
+0000026C: E24F2F83    ;   ADR R2, is
+00000270: E1A00002    ;   MOV  R0,R2
 00000274: EF000003    ;   SVC  3
-00000278: E24F1F72    ;   ADR R1, s8
-0000027C: E1A00001    ;   MOV  R0,R1
-00000280: EF000003    ;   SVC  3
-00000284: E24F2F89    ;   ADR R2, is
-00000288: E1A00002    ;   MOV  R0,R2
-0000028C: EF000003    ;   SVC  3
-00000290: EBFFFF9A    ;   BL stringLength
-00000294:             ; 
-00000294: E24F1F8B    ;   ADR R1, strsize
-00000298: E1A00001    ;   MOV  R0,R1
+00000278: EBFFFFA0    ;   BL stringLength
+0000027C:             ; 
+0000027C: E24F1F85    ;   ADR R1, strsize
+00000280: E1A00001    ;   MOV  R0,R1
+00000284: EF000003    ;   SVC  3
+00000288: E24F1F76    ;   ADR R1, s8
+0000028C: E1A00001    ;   MOV  R0,R1
+00000290: EF000003    ;   SVC  3
+00000294: E24F2F8D    ;   ADR R2, is
+00000298: E1A00002    ;   MOV  R0,R2
 0000029C: EF000003    ;   SVC  3
-000002A0: E24F1F79    ;   ADR R1, s9
-000002A4: E1A00001    ;   MOV  R0,R1
-000002A8: EF000003    ;   SVC  3
-000002AC: E24F2F93    ;   ADR R2, is
-000002B0: E1A00002    ;   MOV  R0,R2
-000002B4: EF000003    ;   SVC  3
-000002B8: EBFFFF90    ;   BL stringLength
-000002BC: EF000002    ;   SVC 2
-000002C0:             ; 
-000002C0:             ; 
-000002C0: E24F1F8F    ; part2   ADR R1, s1
-000002C4: EBFFFF99    ;   BL  printstringReverse
-000002C8: E24F1F8F    ;   ADR R1, s2
-000002CC: EBFFFF97    ;   BL  printstringReverse
-000002D0: E24F1D09    ;   ADR R1, s3
+000002A0: EBFFFF96    ;   BL stringLength
+000002A4:             ; 
+000002A4: E24F1F8F    ;   ADR R1, strsize
+000002A8: E1A00001    ;   MOV  R0,R1
+000002AC: EF000003    ;   SVC  3
+000002B0: E24F1F7D    ;   ADR R1, s9
+000002B4: E1A00001    ;   MOV  R0,R1
+000002B8: EF000003    ;   SVC  3
+000002BC: E24F2F97    ;   ADR R2, is
+000002C0: E1A00002    ;   MOV  R0,R2
+000002C4: EF000003    ;   SVC  3
+000002C8: EBFFFF8C    ;   BL stringLength
+000002CC: EF000002    ;   SVC 2
+000002D0:             ; 
+000002D0:             ; 
+000002D0: E24F1F93    ; part2   ADR R1, s1
 000002D4: EBFFFF95    ;   BL  printstringReverse
-000002D8: E24F1D09    ;   ADR R1, s4
+000002D8: E24F1F93    ;   ADR R1, s2
 000002DC: EBFFFF93    ;   BL  printstringReverse
-000002E0: E24F1D09    ;   ADR R1, s5
+000002E0: E24F1E25    ;   ADR R1, s3
 000002E4: EBFFFF91    ;   BL  printstringReverse
-000002E8: E24F1D09    ;   ADR R1, s6
+000002E8: E24F1E25    ;   ADR R1, s4
 000002EC: EBFFFF8F    ;   BL  printstringReverse
-000002F0: E24F1F91    ;   ADR R1, s7
+000002F0: E24F1E25    ;   ADR R1, s5
 000002F4: EBFFFF8D    ;   BL  printstringReverse
-000002F8: E24F1F92    ;   ADR R1, s8
+000002F8: E24F1E25    ;   ADR R1, s6
 000002FC: EBFFFF8B    ;   BL  printstringReverse
-00000300: E24F1F91    ;   ADR R1, s9
+00000300: E24F1F95    ;   ADR R1, s7
 00000304: EBFFFF89    ;   BL  printstringReverse
-00000308: EF000002    ;   SVC 2
-0000030C:             ; 
-0000030C:             ; 
-0000030C: E24F1F97    ; part3   ADR R1, s8
-00000310: E24F2F95    ;   ADR R2, s9
-00000314: E24F3FC6    ;   ADR R3, buffer
-00000318: EBFFFF89    ;   BL  stringCopy
-0000031C: E24F1E32    ;   ADR R1, buffer
-00000320: EBFFFF71    ;   BL printstring
-00000324:             ; 
-00000324: EF000002    ;   SVC 2
-00000328:             ; 
+00000308: E24F1F96    ;   ADR R1, s8
+0000030C: EBFFFF87    ;   BL  printstringReverse
+00000310: E24F1F95    ;   ADR R1, s9
+00000314: EBFFFF85    ;   BL  printstringReverse
+00000318: EF000002    ;   SVC 2
+0000031C:             ; 
+0000031C:             ; 
+0000031C: E24F1F9B    ; part3   ADR R1, s8
+00000320: E24F2F99    ;   ADR R2, s9
+00000324: E24F3FCA    ;   ADR R3, buffer
+00000328: EBFFFF89    ;   BL  stringCopy
+0000032C: E24F1E33    ;   ADR R1, buffer
+00000330: EBFFFF6D    ;   BL printstring
+00000334:             ; 
+00000334: EF000002    ;   SVC 2
+00000338:             ; 
 
 Symbol Table: Labels
 : buffer                            00000004  Local -- ARM
@@ -330,9 +351,10 @@ Symbol Table: Labels
 : s9                                000000C4  Local -- ARM
 : printstring                       000000EC  Local -- ARM
 : stringLength                      00000100  Local -- ARM
-: s_chk                             00000108  Local -- ARM
+: byte_loop_count                   00000108  Local -- ARM
 : printstringReverse                00000130  Local -- ARM
-: stringCopy                        00000144  Local -- ARM
-: part1                             00000150  Local -- ARM
-: part2                             000002C0  Local -- ARM
-: part3                             0000030C  Local -- ARM
+: reverse_process                   0000013C  Local -- ARM
+: stringCopy                        00000154  Local -- ARM
+: part1                             00000160  Local -- ARM
+: part2                             000002D0  Local -- ARM
+: part3                             0000031C  Local -- ARM

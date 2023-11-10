@@ -1,6 +1,6 @@
 ;by default it will branch to label 'part1'
 
-	B part1 ; part1 or part2 or part3
+	B part2; part1 or part2 or part3
 
 
 
@@ -47,6 +47,7 @@ stringLength
 ;by default R2 contains integer value zero, you need to write a
 ;piece of assembly code to calculate the length of the string pointed by R1
 ;your code goes here
+	
   MOV R2,#0           ;len = 0
                         ;while string[len:]:
                         ;   len =len+ 1
@@ -67,24 +68,28 @@ stringLength
 	;;  But LSR also doesn't work
 	;;	So...
 
-	;;  Lecture notes imply some instructions can indirectly access CPSR register
+	;;  Lecture notes imply some branch instructions can indirectly access CPSR register.
 	
-	;;	The truth is, I have been avoiding them because I don't like videos/presentations...
-	;;	I like books/texts!
-	
+	;;  The truth is, I don't like videos/powerpoints... I have only been reading course texts.
 
-	MOV R7, #0
+	;;  But you have to just follow the template course, because Bennett is a limited emulator.
+	;;  	Understand Christos' dismay with Bennett now.
 
-	
-char_loop_count
-	
-	LDRB R8, [R1], #1
-	CMP R8, #0
-	ADD R7, R7, #1
-	BNE char_loop_count
+
+	MOV R2, #0
 
 	
-	ADD R7, R7, #-1		;;  Ahmed gave this one away, in the live lecture
+byte_loop_count
+	
+	LDRB R8, [R1], #1	; load byte from r1 to r8 and increment PC
+	CMP R8, #0		; compare r8 with 0, store result in CPSR
+	ADD R2, R2, #1		; add 1 to r2
+	;; MOV R0, R8
+	;; SVC 0
+	BNE byte_loop_count	; using CPSR comparison bit, branch/not to byte_loop_count
+
+	
+	ADD R2, R2, #-1		; deincrement the extra counter (Ahmed gave this away in lecture)
 
 
 	
@@ -101,11 +106,26 @@ char_loop_count
 ;************************** part 2 **************************
 printstringReverse
 
-;Your code goes here replacing the 2 lines given below
-  MOV  R0,R1
-  SVC  3
 
+;;;   Note that this function expects that the string to print is in R1
+;;;   And that R2 is unused
 
+	MOV R12, LR
+
+	ADR LR, reverse_process
+
+	B stringLength		; get the string length, return to this line
+
+reverse_process
+	MOV R0, R8
+	SVC 0
+
+	MOV LR, R12
+	
+	;; MOV R0, R2		; 
+	;; SVC 4
+	;; MOV R0, R1
+	;; SVC 3
 
 
 
@@ -118,9 +138,8 @@ printstringReverse
 
 ;************************** part 3 ***************************
 stringCopy
-
-;Your code goes here replacing the 2 lines given below
-  MOV  R0,R1
+					;Your code goes here replacing the 2 lines given below
+  MOV  R12,R2
   SVC  3
 
 
