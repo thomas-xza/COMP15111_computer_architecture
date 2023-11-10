@@ -51,7 +51,29 @@ stringLength
                         ;while string[len:]:
                         ;   len =len+ 1
 
+	;; contents of R1 = string
+	
+	LDRB R0, [R1], #1
+	SVC 0
+	MOV  R0, #10
+	SVC 0
+	LDRB R0, [R1], #1
+	SVC 0
+	MOV  R0, #10
+	SVC 0
+	LDRB R0, [R1], #1
+	SVC 0
+	MOV  R0, #10
+	SVC 0
+	LDRB R0, [R1], #1
+	SVC 0
+	MOV  R0, #10
+	SVC 0
+	LDRB R0, [R1], #1
+	SVC 0
 
+
+	
 ;R2 must contain the length of the string
 ; don't remove these lines
   MOV  R0,R2
