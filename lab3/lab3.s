@@ -16,10 +16,8 @@ is		DEFB	" >> is \0"
 strsize		DEFB	"The length of string >> \0 "
         ALIGN
 
-s1	DEFB "se\0"
+s1	DEFB "seven\0"
 	ALIGN
-;; s1	DEFB "seven\0"
-;; 	ALIGN
 s2	DEFB "six\0"
 	ALIGN
 s3	DEFB "five\0"
@@ -138,20 +136,15 @@ printstringReverse
 ;;; ;;;   It seems weird to put addresses on the stack, but LDRB only works with addresses...
 ;;; ;;;   Will use AND to put actual values on stack, feels more sane.
 	
+
+
+;;; ;;;   OK THIS IS THE TRICK TO MAKING PUSH AND POP ACTUALLY WORK WITH BENNETT:
 	
-;;; ;;;   ADD R13, R13, #2048	;  manual implementation of POP {R1}
+MOV R13, #2048	;  set the stack pointer to an empty address
 
 
-;; ;; verbose, manual implementation of PUSH {R1}
-	
-;; ADD R13, R13, #-4	;  move stack pointer backwards by 4 bytes
-;; STR R1, [R13]		;  store contents of r1 (an address) to location of r13
 
-
-;; ;; verbose, manual implementation of POP {R1}
-	
-;; LDR R2, [R13]
-;; ADD R13, R13, #4
+MOV R2, #0	;  reset the byte iteration counter
 
 	
 byte_loop_push
@@ -159,27 +152,47 @@ byte_loop_push
 	;  LDRB SHOULD ONLY LOAD 1 BYTE, LIKE RISC-V - NO ADDRESS MANIPULATION	
 	
 	LDRB R0, [R1,R2]		;  r1 contains address, load 4 LSBs of [ r1 address location + r2 bytes ] to r0
-	ADD R2, R2, #1		;  add 1 to r2
-	PUSH {R0}		;  decrement stack pointer by 4, store contents of r0 to [SP]
+	ADD R2, R2, #1		;  add 1 to r2, to load next char
 
-	SVC 0			;  FOR DEBUGGING: Output byte
+	PUSH {R0}
+	
+	;; verbose, manual implementation of PUSH {R1}
+
+	;; ADD R13, R13, #-4	;  move stack pointer backwards by 4 bytes
+	;; STR R0, [R13]		;  store contents of r0 (an address) to location of r13
+	
+	;; SVC 0			;  FOR DEBUGGING: Output byte
 
 	CMP R0, #0	   	;  compare r4 with 0, store result in CPSR
-	BNE byte_loop_push	;  using CPSR comparison bit, branch/don't to byte_loop_out
+	BNE byte_loop_push	;  using CPSR comparison bit, branch/don't to byte_loop_push
 
+	
+pop_last_stack_value
 
+	POP {R0}
+	
+	;; LDR R0, [R13]		;  load contents of r13 to r0, to pop the last 0 from stack
+	;; ADD R13, R13, #4	;  add 4 to r13
+
+	
 byte_loop_pop
 	
-	POP {R0}		;  store contents of [SP] to r0, increment stack pointer by 4
-	LDRB R0, [R1,R2]	
-	ADD R2, R2, #-1		;  Add 1 to R2 to count quantity of chars
+	;; verbose, manual implementation of POP {R1}
 	
-	CMP R2, #0	   	;  compare r4 with 0, store result in CPSR
+	;; LDR R0, [R13]		;  load contents of r13 to r0
+	;; ADD R13, R13, #4	;  add 4 to r13 (move stack pointer)
+
+	POP {R0}
+
+	
 	SVC 0			
+	
+	CMP R13, #2048	   	;  compare r13 with top of stack address, store result in CPSR
+	BNE byte_loop_pop	;  using CPSR comparison bit, branch/don't to byte_loop_pop
 
 	
 	LDRB R0, [R3], #-1	;  load final char
-	SVC 0
+	;; SVC 0
 
 	MOV  R0, #10		;  output newline
 	SVC  0	
