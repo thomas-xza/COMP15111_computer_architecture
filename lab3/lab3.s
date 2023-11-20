@@ -1,11 +1,11 @@
 				;by default it will branch to label 'part1'
 
-B part1; part1 or part2 or part3
+B part2; part1 or part2 or part3
 
 
 ;;;   Comment out the "SVC 2" lines at the end to test all fast
 ;;;     Note that part2 reuses some functionality from part1 (with links)
-;;;     This is against the spec but, I learnt more
+;;;     This is against the spec but, I learnt more, which is why I'm here right
 	
 
 buffer	DEFS 100,0
@@ -16,8 +16,10 @@ is		DEFB	" >> is \0"
 strsize		DEFB	"The length of string >> \0 "
         ALIGN
 
-s1	DEFB "seven\0"
+s1	DEFB "se\0"
 	ALIGN
+;; s1	DEFB "seven\0"
+;; 	ALIGN
 s2	DEFB "six\0"
 	ALIGN
 s3	DEFB "five\0"
@@ -118,42 +120,64 @@ byte_loop_count
 printstringReverse
 
 
-;;;   Sorry, I wasn't interested in following the exact specification
-;;;   Mark me down if you like, it doesn't bother me, the points aren't worth anything!
+;;; ;;;;  Second attempt below - with actual stack,
+;;; ;;;;    because thinking of taking microcontrollers course (but aren't they programmed in C?)
 
 
-;;;   Note that this function expects that the string to print is in R1
-;;;   And that R2 is unused
+;;; ;;;   Plan:
+
+;;; ;;;   1. add chars to stack, compare with zero, loop if not zero, iterate quantity
+;;; ;;;   2. pop chars from stack, decrement quantity, compare with zero
+
+;;; ;;;   Psuedoinstruction PUSH & POP a bit inappropriate because we are operating on bytes...
+;;; ;;;   There could be a PUSHB or POPB but instead we have LDRB manipulating addresses too...
+;;; ;;;   OK PUSH {R1} doesn't work in Bennett - it only changes the stack pointer?
+;;; ;;;   Aw hell, we're Bennett guinae pigs.
+
+
+;;; ;;;   It seems weird to put addresses on the stack, but LDRB only works with addresses...
+;;; ;;;   Will use AND to put actual values on stack, feels more sane.
 	
-
-	MOV R12, LR		;  put address of callee in R12
-
-	ADR LR, reverse_process ;  put address of reverse_process in LR (for later return)
-
-	B stringLength		;  branch off to get the string length
 	
-reverse_process			;  branches back to here
+;;; ;;;   ADD R13, R13, #2048	;  manual implementation of POP {R1}
 
-	;;;   R3 now contains the address of the end of the string
-	;;;   R2 now contains the length of the string
 
-	MOV r4, r2		;  copy r2 to r4 (contains string length)
+;; ;; verbose, manual implementation of PUSH {R1}
 	
-        ;; ADR R0, pause           ; move PC to location of op4
-        ;; SVC 3                   ; output r0 as string	
+;; ADD R13, R13, #-4	;  move stack pointer backwards by 4 bytes
+;; STR R1, [R13]		;  store contents of r1 (an address) to location of r13
+
+
+;; ;; verbose, manual implementation of POP {R1}
 	
-byte_loop_out
+;; LDR R2, [R13]
+;; ADD R13, R13, #4
+
+	
+byte_loop_push
+
+	;  LDRB SHOULD ONLY LOAD 1 BYTE, LIKE RISC-V - NO ADDRESS MANIPULATION	
+	
+	LDRB R0, [R1,R2]		;  r1 contains address, load 4 LSBs of [ r1 address location + r2 bytes ] to r0
+	ADD R2, R2, #1		;  add 1 to r2
+	PUSH {R0}		;  decrement stack pointer by 4, store contents of r0 to [SP]
+
+	SVC 0			;  FOR DEBUGGING: Output byte
+
+	CMP R0, #0	   	;  compare r4 with 0, store result in CPSR
+	BNE byte_loop_push	;  using CPSR comparison bit, branch/don't to byte_loop_out
 
 
-	;; LDRB R0, [R3], #-1	; #-1 deincrement address within r3 by 1, load contents of r3 to r0
-	LDRB R0, [R3], #-1	;  Should be 2 separate instructions, arguably - more RISC like
+byte_loop_pop
+	
+	POP {R0}		;  store contents of [SP] to r0, increment stack pointer by 4
+	LDRB R0, [R1,R2]	
+	ADD R2, R2, #-1		;  Add 1 to R2 to count quantity of chars
+	
+	CMP R2, #0	   	;  compare r4 with 0, store result in CPSR
 	SVC 0			
 
-	ADD R4, R4, #-1
 	
-	CMP R4, #0		;  compare r4 with 0, store result in CPSR
-	BNE byte_loop_out	;  using CPSR comparison bit, branch/don't to byte_loop_out
-
 	LDRB R0, [R3], #-1	;  load final char
 	SVC 0
 
@@ -162,10 +186,58 @@ byte_loop_out
 	
 	
 
-	MOV LR, R12		;  prepare to branch back to callee
 	
 
+;;;;;;;;;;; ;;; First fully functional attempt below, but no stack
+;;;;;;;;;;; ;;; LDRB does indeed suck
+	
 
+;;;   Note that this function expects that the string to print is in R1
+;;;   And that R2 is unused
+	
+
+;; 	MOV R12, LR		;  put address of callee in R12
+
+;; 	ADR LR, reverse_process ;  put address of reverse_process in LR (for later return)
+
+;; 	B stringLength		;  branch off to get the string length
+	
+;; reverse_process			;  branches back to here
+
+;; 	;;;   R3 now contains the address of the end of the string
+;; 	;;;   R2 now contains the length of the string
+
+;; 	MOV r4, r2		;  copy r2 to r4 (contains string length)
+	
+;;         ;; ADR R0, pause           ; move PC to location of op4
+;;         ;; SVC 3                   ; output r0 as string	
+	
+;; byte_loop_out
+
+
+;; 	;; LDRB R0, [R3], #-1	; #-1 deincrement address within r3 by 1, load contents of r3 to r0
+;; 	LDRB R0, [R3], #-1	;  Should be 2 separate instructions, arguably - more RISC like
+;; 	SVC 0			
+
+;; 	ADD R4, R4, #-1
+	
+;; 	CMP R4, #0		;  compare r4 with 0, store result in CPSR
+;; 	BNE byte_loop_out	;  using CPSR comparison bit, branch/don't to byte_loop_out
+
+;; 	LDRB R0, [R3], #-1	;  load final char
+;; 	SVC 0
+
+;; 	MOV  R0, #10		;  output newline
+;; 	SVC  0	
+	
+	
+
+;; 	MOV LR, R12		;  prepare to branch back to callee
+	
+
+;;; ;;;;;;;;;;;;;;;;;;;;  END OF FIRST ATTEMPT
+
+	
 
 ; don't remove these lines
 	MOV  R0, #10	; given - output end-of-line
@@ -199,7 +271,6 @@ byte_loop_strcopy
 	
 	CMP R4, #0		;  compare r8 with 0, store result in CPSR
 	BNE byte_loop_strcopy	;  using CPSR comparison bit, branch/not to byte_loop_count
-
 
 
 concat_string_out_init

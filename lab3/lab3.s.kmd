@@ -1,11 +1,13 @@
 KMD
 00000000:             ;                                 ;by default it will branch to label 'part1'
 00000000:             ; 
-00000000: EA00006F    ; B part1; part1 or part2 or part3
+00000000: EA0000CB    ; B part2; part1 or part2 or part3
 00000004:             ; 
 00000004:             ; 
-00000004:             ; ;;;   Comment out the "SVC 2" lines at the end to test all
-00000004:             ; 
+00000004:             ; ;;;   Comment out the "SVC 2" lines at the end to test all fast
+00000004:             ; ;;;     Note that part2 reuses some functionality from part1 (with links)
+00000004:             ; ;;;     This is against the spec but, I learnt more, which is why I'm here right
+00000004:             ;         
 00000004:             ; 
 00000004: 00 00 00 00 ; buffer  DEFS 100,0
 00000008: 00 00 00 00 ; 
@@ -46,179 +48,252 @@ KMD
 00000088: 00 20       ; 
 0000008C:             ;         ALIGN
 0000008C:             ; 
-0000008C: 73 65 76 65 ; s1      DEFB "seven\0"
-00000090: 6E 00       ; 
+0000008C: 73 65 00    ; s1      DEFB "se\0"
+00000090:             ;         ALIGN
+00000090:             ; ;; s1   DEFB "seven\0"
+00000090:             ; ;;      ALIGN
+00000090: 73 69 78 00 ; s2      DEFB "six\0"
 00000094:             ;         ALIGN
-00000094: 73 69 78 00 ; s2      DEFB "six\0"
-00000098:             ;         ALIGN
-00000098: 66 69 76 65 ; s3      DEFB "five\0"
-0000009C: 00          ; 
-000000A0:             ;         ALIGN
-000000A0: 66 6F 75 72 ; s4      DEFB "four\0"
-000000A4: 00          ; 
-000000A8:             ;         ALIGN
-000000A8: 74 68 72 65 ; s5      DEFB "three\0"
-000000AC: 65 00       ; 
+00000094: 66 69 76 65 ; s3      DEFB "five\0"
+00000098: 00          ; 
+0000009C:             ;         ALIGN
+0000009C: 66 6F 75 72 ; s4      DEFB "four\0"
+000000A0: 00          ; 
+000000A4:             ;         ALIGN
+000000A4: 74 68 72 65 ; s5      DEFB "three\0"
+000000A8: 65 00       ; 
+000000AC:             ;         ALIGN
+000000AC: 74 77 6F 00 ; s6      DEFB "two\0"
 000000B0:             ;         ALIGN
-000000B0: 74 77 6F 00 ; s6      DEFB "two\0"
+000000B0: 6F 6E 65 00 ; s7      DEFB "one\0"
 000000B4:             ;         ALIGN
-000000B4: 6F 6E 65 00 ; s7      DEFB "one\0"
-000000B8:             ;         ALIGN
-000000B8: 43 4F 4D 50 ; s8      DEFB "COMP15111 \0"
-000000BC: 31 35 31 31 ; 
-000000C0: 31 20 00    ; 
-000000C4:             ;         ALIGN
-000000C4: 46 75 6E 64 ; s9      DEFB "Fundamentals of Computer Architecture\0"
-000000C8: 61 6D 65 6E ; 
-000000CC: 74 61 6C 73 ; 
-000000D0: 20 6F 66 20 ; 
-000000D4: 43 6F 6D 70 ; 
-000000D8: 75 74 65 72 ; 
-000000DC: 20 41 72 63 ; 
-000000E0: 68 69 74 65 ; 
-000000E4: 63 74 75 72 ; 
-000000E8: 65 00       ; 
-000000EC:             ;         ALIGN
-000000EC:             ; 
-000000EC: 50 41 55 53 ; pause     DEFB    "PAUSE EXECUTION"
-000000F0: 45 20 45 58 ; 
-000000F4: 45 43 55 54 ; 
-000000F8: 49 4F 4E    ; 
-000000FC:             ;         ALIGN
-000000FC:             ; 
-000000FC:             ; 
-000000FC:             ; printstring
-000000FC: E1A00001    ;         MOV  R0,R1
-00000100: EF000003    ;         SVC  3
-00000104: E3A0000A    ;         MOV  R0, #10
-00000108: EF000000    ;         SVC  0
-0000010C: E1A0F00E    ;         MOV  PC, LR
-00000110:             ; 
-00000110:             ; 
-00000110:             ; 
-00000110:             ; ;************************** part 1 **************************
-00000110:             ; stringLength
-00000110:             ; 
-00000110:             ; ; R2 must contain the length of the string.
-00000110:             ; ;by default R2 contains integer value zero, you need to write a
-00000110:             ; ;piece of assembly code to calculate the length of the string pointed by R1
-00000110:             ;                                 ;your code goes here
-00000110:             ; 
-00000110:             ;         ;;  MOV R2, #4294967295
-00000110:             ;         ;;  STR R3, all_ones            ;;  Doesn't work
-00000110:             ; 
-00000110:             ;         ;;  CMP and AND doesn't work, as cannot access CPSR register (Bennett restriction)
-00000110:             ;         
-00000110:             ;         ;;  Other ideas:
-00000110:             ;         ;;    1. AND each bit individually
-00000110:             ;         ;;    2. Bitshift right 8 times, AND the last position with 1
-00000110:             ;         ;;              - This is a big reverse engineering effort, but learn some Assembly I g
+000000B4: 43 4F 4D 50 ; s8      DEFB "COMP15111 \0"
+000000B8: 31 35 31 31 ; 
+000000BC: 31 20 00    ; 
+000000C0:             ;         ALIGN
+000000C0: 46 75 6E 64 ; s9      DEFB "Fundamentals of Computer Architecture\0"
+000000C4: 61 6D 65 6E ; 
+000000C8: 74 61 6C 73 ; 
+000000CC: 20 6F 66 20 ; 
+000000D0: 43 6F 6D 70 ; 
+000000D4: 75 74 65 72 ; 
+000000D8: 20 41 72 63 ; 
+000000DC: 68 69 74 65 ; 
+000000E0: 63 74 75 72 ; 
+000000E4: 65 00       ; 
+000000E8:             ;         ALIGN
+000000E8:             ; 
+000000E8: 50 41 55 53 ; pause     DEFB    "PAUSE EXECUTION"
+000000EC: 45 20 45 58 ; 
+000000F0: 45 43 55 54 ; 
+000000F4: 49 4F 4E    ; 
+000000F8:             ;         ALIGN
+000000F8:             ; 
+000000F8:             ; 
+000000F8:             ; printstring
+000000F8: E1A00001    ;         MOV  R0,R1
+000000FC: EF000003    ;         SVC  3
+00000100: E3A0000A    ;         MOV  R0, #10
+00000104: EF000000    ;         SVC  0
+00000108: E1A0F00E    ;         MOV  PC, LR
+0000010C:             ; 
+0000010C:             ; 
+0000010C:             ; 
+0000010C:             ; ;************************** part 1 **************************
+0000010C:             ; stringLength
+0000010C:             ; 
+0000010C:             ; ; R2 must contain the length of the string.
+0000010C:             ; ;by default R2 contains integer value zero, you need to write a
+0000010C:             ; ;piece of assembly code to calculate the length of the string pointed by R1
+0000010C:             ;                                 ;your code goes here
+0000010C:             ; 
+0000010C:             ;         ;;  MOV R2, #4294967295
+0000010C:             ;         ;;  STR R3, all_ones            ;;  Doesn't work
+0000010C:             ; 
+0000010C:             ;         ;;  CMP and AND doesn't work, as cannot access CPSR register (Bennett restriction)
+0000010C:             ;         
+0000010C:             ;         ;;  Other ideas:
+0000010C:             ;         ;;    1. AND each bit individually
+0000010C:             ;         ;;    2. Bitshift right 8 times, AND the last position with 1
+0000010C:             ;         ;;              - This is a big reverse engineering effort, but learn some Assembly I g
                       ; uess
-00000110:             ; 
-00000110:             ;         ;;  But LSR also doesn't work in Bennett
-00000110:             ;         ;;  Nonetheless they all go back to CMP
-00000110:             ; 
-00000110:             ;         ;;  Lecture notes imply some branch instructions can indirectly access CPSR register.
-00000110:             ;         
-00000110:             ;         ;;  The truth is, I don't like videos/powerpoints, so I have only been reading course t
+0000010C:             ; 
+0000010C:             ;         ;;  But LSR also doesn't work in Bennett
+0000010C:             ;         ;;  Nonetheless they all go back to CMP
+0000010C:             ; 
+0000010C:             ;         ;;  Lecture notes imply some branch instructions can indirectly access CPSR register.
+0000010C:             ;         
+0000010C:             ;         ;;  The truth is, I don't like videos/powerpoints, so I have only been reading course t
                       ; exts.
-00000110:             ; 
-00000110:             ;         ;;  But you have to just follow the template course, because Bennett is a limited emula
+0000010C:             ; 
+0000010C:             ;         ;;  But you have to just follow the template course, because Bennett is a limited emula
                       ; tor.
-00000110:             ;         ;;      Understand Christos' dismay with Bennett now.
+0000010C:             ;         ;;      Understand Christos' dismay with Bennett now.
+0000010C:             ; 
+0000010C:             ; 
+0000010C:             ; ;;;  A CALL TO `stringLength` EXITS WITH
+0000010C:             ; ;;;    length as integer in r2
+0000010C:             ; ;;;    position of last byte in r3
+0000010C:             ; 
+0000010C:             ;         
+0000010C: E3A02000    ;   MOV R2,#0           ;len = 0
+00000110:             ;                         ;while string[len:]:
+00000110:             ;                         ;   len =len+ 1
 00000110:             ; 
-00000110:             ; 
-00000110:             ; ;;;  A CALL TO `stringLength` EXITS WITH
-00000110:             ; ;;;    length as integer in r2
-00000110:             ; ;;;    position of last byte in r3
+00000110:             ;         ;;  contents of R1 = string
 00000110:             ; 
 00000110:             ;         
-00000110: E3A02000    ;   MOV R2,#0           ;len = 0
-00000114:             ;                         ;while string[len:]:
-00000114:             ;                         ;   len =len+ 1
-00000114:             ; 
-00000114:             ;         ;;  contents of R1 = string
+00000110:             ; 
+00000110: E3A02000    ;         MOV R2, #0
 00000114:             ; 
 00000114:             ;         
-00000114:             ; 
-00000114: E3A02000    ;         MOV R2, #0
-00000118:             ; 
-00000118:             ;         
-00000118:             ; byte_loop_count
-00000118:             ;         
-00000118: E2822001    ;         ADD R2, R2, #1          ; add 1 to r2
-0000011C: E4D18001    ;         LDRB R8, [R1], #1       ; load byte from r1 to r8 and increment R1
-00000120: E3580000    ;         CMP R8, #0              ; compare r8 with 0, store result in CPSR
-00000124: E1A03001    ;         MOV R3, R1              ; store for later reuse
-00000128: 1AFFFFFA    ;         BNE byte_loop_count     ; using CPSR comparison bit, branch/not to byte_loop_count
-0000012C:             ; 
-0000012C: E2422001    ;         ADD R2, R2, #-1         ; deincrement the extra counter (Ahmed gave this away in lectur
+00000114:             ; byte_loop_count
+00000114:             ;         
+00000114: E2822001    ;         ADD R2, R2, #1          ; add 1 to r2
+00000118: E4D18001    ;         LDRB R8, [R1], #1       ; load byte from r1 to r8 and increment R1
+0000011C: E3580000    ;         CMP R8, #0              ; compare r8 with 0, store result in CPSR
+00000120: E1A03001    ;         MOV R3, R1              ; store for later reuse
+00000124: 1AFFFFFA    ;         BNE byte_loop_count     ; using CPSR comparison bit, branch/not to byte_loop_count
+00000128:             ; 
+00000128: E2422001    ;         ADD R2, R2, #-1         ; deincrement the extra counter (Ahmed gave this away in lectur
                       ; e)
-00000130: E2433001    ;         ADD R3, R3, #-1         ; deincrement the final byte position
-00000134:             ;         
-00000134:             ; ;R2 must contain the length of the string
-00000134:             ; ; don't remove these lines
-00000134: E1A00002    ;   MOV  R0,R2
-00000138: EF000004    ;   SVC  4
-0000013C: E3A0000A    ;   MOV  R0, #10
-00000140: EF000000    ;   SVC  0
-00000144: E1A0F00E    ;   MOV  PC, LR
-00000148:             ; 
-00000148:             ; 
-00000148:             ; 
-00000148:             ; ;************************** part 2 **************************
-00000148:             ; printstringReverse
-00000148:             ; 
-00000148:             ; 
-00000148:             ; ;;;   Sorry, I wasn't interested in following the exact specification
-00000148:             ; ;;;   Mark me down if you like, it doesn't bother me, the points aren't worth anything!
-00000148:             ; 
-00000148:             ; 
-00000148:             ; ;;;   Note that this function expects that the string to print is in R1
-00000148:             ; ;;;   And that R2 is unused
-00000148:             ;         
-00000148:             ; 
-00000148: E1A0C00E    ;         MOV R12, LR             ;  put address of callee in R12
-0000014C:             ; 
-0000014C: E28FE000    ;         ADR LR, reverse_process ;  put address of reverse_process in LR (for later return)
+0000012C: E2433001    ;         ADD R3, R3, #-1         ; deincrement the final byte position
+00000130:             ;         
+00000130:             ; ;R2 must contain the length of the string
+00000130:             ; ; don't remove these lines
+00000130: E1A00002    ;   MOV  R0,R2
+00000134: EF000004    ;   SVC  4
+00000138: E3A0000A    ;   MOV  R0, #10
+0000013C: EF000000    ;   SVC  0
+00000140: E1A0F00E    ;   MOV  PC, LR
+00000144:             ; 
+00000144:             ; 
+00000144:             ; 
+00000144:             ; ;************************** part 2 **************************
+00000144:             ; printstringReverse
+00000144:             ; 
+00000144:             ; 
+00000144:             ; ;;; ;;;;  Second attempt below - with actual stack,
+00000144:             ; ;;; ;;;;    because thinking of taking microcontrollers course (but aren't they programmed in C
+                      ; ?)
+00000144:             ; 
+00000144:             ; 
+00000144:             ; ;;; ;;;   Plan:
+00000144:             ; 
+00000144:             ; ;;; ;;;   1. add chars to stack, compare with zero, loop if not zero, iterate quantity
+00000144:             ; ;;; ;;;   2. pop chars from stack, decrement quantity, compare with zero
+00000144:             ; 
+00000144:             ; ;;; ;;;   Psuedoinstruction PUSH & POP a bit inappropriate because we are operating on bytes...
+00000144:             ; ;;; ;;;   There could be a PUSHB or POPB but instead we have LDRB manipulating addresses too...
+00000144:             ; ;;; ;;;   OK PUSH {R1} doesn't work in Bennett - it only changes the stack pointer?
+00000144:             ; ;;; ;;;   Aw hell, we're Bennett guinae pigs.
+00000144:             ; 
+00000144:             ; 
+00000144:             ; ;;; ;;;   It seems weird to put addresses on the stack, but LDRB only works with addresses...
+00000144:             ; ;;; ;;;   Will use AND to put actual values on stack, feels more sane.
+00000144:             ;         
+00000144:             ;         
+00000144:             ; ;;; ;;;   ADD R13, R13, #2048   ;  manual implementation of POP {R1}
+00000144:             ; 
+00000144:             ; 
+00000144:             ; ;; ;; verbose, manual implementation of PUSH {R1}
+00000144:             ;         
+00000144:             ; ;; ADD R13, R13, #-4    ;  move stack pointer backwards by 4 bytes
+00000144:             ; ;; STR R1, [R13]                ;  store contents of r1 (an address) to location of r13
+00000144:             ; 
+00000144:             ; 
+00000144:             ; ;; ;; verbose, manual implementation of POP {R1}
+00000144:             ;         
+00000144:             ; ;; LDR R2, [R13]
+00000144:             ; ;; ADD R13, R13, #4
+00000144:             ; 
+00000144:             ;         
+00000144:             ; byte_loop_push
+00000144:             ; 
+00000144:             ;         ;  LDRB SHOULD ONLY LOAD 1 BYTE, LIKE RISC-V - NO ADDRESS MANIPULATION  
+00000144:             ;         
+00000144: E7D10002    ;         LDRB R0, [R1,R2]                ;  r1 contains address, load 4 LSBs of [ r1 address loc
+                      ; ation + r2 bytes ] to r0
+00000148: E2822001    ;         ADD R2, R2, #1          ;  add 1 to r2
+0000014C: E92D0001    ;         PUSH {R0}               ;  decrement stack pointer by 4, store contents of r0 to [SP]
 00000150:             ; 
-00000150: EAFFFFEE    ;         B stringLength          ;  branch off to get the string length
-00000154:             ;         
-00000154:             ; reverse_process                 ;  branches back to here
+00000150: EF000000    ;         SVC 0                   ;  FOR DEBUGGING: Output byte
 00000154:             ; 
-00000154:             ;         ;;;   R3 now contains the address of the end of the string
-00000154:             ;         ;;;   R2 now contains the length of the string
-00000154:             ; 
-00000154: E1A04002    ;         MOV r4, r2              ;  copy r2 to r4 (contains string length)
-00000158:             ;         
-00000158:             ;         ;; ADR R0, pause           ; move PC to location of op4
-00000158:             ;         ;; SVC 3                   ; output r0 as string        
-00000158:             ;         
-00000158:             ; byte_loop_out
-00000158:             ; 
-00000158:             ; 
-00000158:             ;         ;; LDRB R0, [R3], #-1   ; #-1 deincrement address within r3 by 1, load contents of r3 t
-                      ; o r0
-00000158: E4530001    ;         LDRB R0, [R3], #-1      ;  Should be 2 separate instructions, arguably - more RISC like
-0000015C: EF000000    ;         SVC 0                   
-00000160:             ; 
-00000160: E2444001    ;         ADD R4, R4, #-1
-00000164:             ;         
-00000164: E3540000    ;         CMP R4, #0              ;  compare r4 with 0, store result in CPSR
-00000168: 1AFFFFFA    ;         BNE byte_loop_out       ;  using CPSR comparison bit, branch/don't to byte_loop_out
-0000016C:             ; 
-0000016C: E4530001    ;         LDRB R0, [R3], #-1      ;  load final char
-00000170: EF000000    ;         SVC 0
-00000174:             ; 
-00000174: E3A0000A    ;         MOV  R0, #10            ;  output newline
-00000178: EF000000    ;         SVC  0  
-0000017C:             ;         
-0000017C:             ;         
-0000017C:             ; 
-0000017C: E1A0E00C    ;         MOV LR, R12             ;  prepare to branch back to callee
+00000154: E3500000    ;         CMP R0, #0              ;  compare r4 with 0, store result in CPSR
+00000158: 1AFFFFF9    ;         BNE byte_loop_push      ;  using CPSR comparison bit, branch/don't to byte_loop_out
+0000015C:             ; 
+0000015C:             ; 
+0000015C:             ; byte_loop_pop
+0000015C:             ;         
+0000015C: E8BD0001    ;         POP {R0}                ;  store contents of [SP] to r0, increment stack pointer by 4
+00000160: E7D10002    ;         LDRB R0, [R1,R2]        
+00000164: E2422001    ;         ADD R2, R2, #-1         ;  Add 1 to R2 to count quantity of chars
+00000168:             ;         
+00000168: E3520000    ;         CMP R2, #0              ;  compare r4 with 0, store result in CPSR
+0000016C: EF000000    ;         SVC 0                   
+00000170:             ; 
+00000170:             ;         
+00000170: E4530001    ;         LDRB R0, [R3], #-1      ;  load final char
+00000174: EF000000    ;         SVC 0
+00000178:             ; 
+00000178: E3A0000A    ;         MOV  R0, #10            ;  output newline
+0000017C: EF000000    ;         SVC  0  
+00000180:             ;         
 00000180:             ;         
 00000180:             ; 
+00000180:             ;         
 00000180:             ; 
+00000180:             ; ;;;;;;;;;;; ;;; First fully functional attempt below, but no stack
+00000180:             ; ;;;;;;;;;;; ;;; LDRB does indeed suck
+00000180:             ;         
+00000180:             ; 
+00000180:             ; ;;;   Note that this function expects that the string to print is in R1
+00000180:             ; ;;;   And that R2 is unused
+00000180:             ;         
+00000180:             ; 
+00000180:             ; ;;      MOV R12, LR             ;  put address of callee in R12
+00000180:             ; 
+00000180:             ; ;;      ADR LR, reverse_process ;  put address of reverse_process in LR (for later return)
+00000180:             ; 
+00000180:             ; ;;      B stringLength          ;  branch off to get the string length
+00000180:             ;         
+00000180:             ; ;; reverse_process                      ;  branches back to here
+00000180:             ; 
+00000180:             ; ;;      ;;;   R3 now contains the address of the end of the string
+00000180:             ; ;;      ;;;   R2 now contains the length of the string
+00000180:             ; 
+00000180:             ; ;;      MOV r4, r2              ;  copy r2 to r4 (contains string length)
+00000180:             ;         
+00000180:             ; ;;         ;; ADR R0, pause           ; move PC to location of op4
+00000180:             ; ;;         ;; SVC 3                   ; output r0 as string     
+00000180:             ;         
+00000180:             ; ;; byte_loop_out
+00000180:             ; 
+00000180:             ; 
+00000180:             ; ;;      ;; LDRB R0, [R3], #-1   ; #-1 deincrement address within r3 by 1, load contents of r3 t
+                      ; o r0
+00000180:             ; ;;      LDRB R0, [R3], #-1      ;  Should be 2 separate instructions, arguably - more RISC like
+00000180:             ; ;;      SVC 0                   
+00000180:             ; 
+00000180:             ; ;;      ADD R4, R4, #-1
+00000180:             ;         
+00000180:             ; ;;      CMP R4, #0              ;  compare r4 with 0, store result in CPSR
+00000180:             ; ;;      BNE byte_loop_out       ;  using CPSR comparison bit, branch/don't to byte_loop_out
+00000180:             ; 
+00000180:             ; ;;      LDRB R0, [R3], #-1      ;  load final char
+00000180:             ; ;;      SVC 0
+00000180:             ; 
+00000180:             ; ;;      MOV  R0, #10            ;  output newline
+00000180:             ; ;;      SVC  0  
+00000180:             ;         
+00000180:             ;         
+00000180:             ; 
+00000180:             ; ;;      MOV LR, R12             ;  prepare to branch back to callee
+00000180:             ;         
+00000180:             ; 
+00000180:             ; ;;; ;;;;;;;;;;;;;;;;;;;;  END OF FIRST ATTEMPT
+00000180:             ; 
+00000180:             ;         
 00000180:             ; 
 00000180:             ; ; don't remove these lines
 00000180: E3A0000A    ;         MOV  R0, #10    ; given - output end-of-line
@@ -252,7 +327,6 @@ KMD
 0000019C:             ;         
 0000019C: E3540000    ;         CMP R4, #0              ;  compare r8 with 0, store result in CPSR
 000001A0: 1AFFFFFB    ;         BNE byte_loop_strcopy   ;  using CPSR comparison bit, branch/not to byte_loop_count
-000001A4:             ; 
 000001A4:             ; 
 000001A4:             ; 
 000001A4:             ; concat_string_out_init
@@ -299,152 +373,152 @@ KMD
 000001E0: E1A00002    ;   MOV  R0,R2
 000001E4: EF000003    ;   SVC  3
 000001E8: E24F1F59    ;   ADR R1, s1
-000001EC: EBFFFFC7    ;   BL stringLength
+000001EC: EBFFFFC6    ;   BL stringLength
 000001F0:             ; 
 000001F0:             ; 
 000001F0: E24F1F62    ;   ADR R1, strsize
 000001F4: E1A00001    ;   MOV  R0,R1
 000001F8: EF000003    ;   SVC  3
-000001FC: E24F1E17    ;   ADR R1, s2
+000001FC: E24F1F5D    ;   ADR R1, s2
 00000200: E1A00001    ;   MOV  R0,R1
 00000204: EF000003    ;   SVC  3
 00000208: E24F2F6A    ;   ADR R2, is
 0000020C: E1A00002    ;   MOV  R0,R2
 00000210: EF000003    ;   SVC  3
-00000214: EBFFFFBD    ;   BL stringLength
+00000214: EBFFFFBC    ;   BL stringLength
 00000218:             ; 
 00000218: E24F1E1B    ;   ADR R1, strsize
 0000021C: E1A00001    ;   MOV  R0,R1
 00000220: EF000003    ;   SVC  3
-00000224: E24F1F65    ;   ADR R1, s3
+00000224: E24F1F66    ;   ADR R1, s3
 00000228: E1A00001    ;   MOV  R0,R1
 0000022C: EF000003    ;   SVC  3
 00000230: E24F2E1D    ;   ADR R2, is
 00000234: E1A00002    ;   MOV  R0,R2
 00000238: EF000003    ;   SVC  3
-0000023C: EBFFFFB3    ;   BL stringLength
+0000023C: EBFFFFB2    ;   BL stringLength
 00000240:             ; 
 00000240: E24F1F76    ;   ADR R1, strsize
 00000244: E1A00001    ;   MOV  R0,R1
 00000248: EF000003    ;   SVC  3
-0000024C: E24F1F6D    ;   ADR R1, s4
+0000024C: E24F1F6E    ;   ADR R1, s4
 00000250: E1A00001    ;   MOV  R0,R1
 00000254: EF000003    ;   SVC  3
 00000258: E24F2F7E    ;   ADR R2, is
 0000025C: E1A00002    ;   MOV  R0,R2
 00000260: EF000003    ;   SVC  3
-00000264: EBFFFFA9    ;   BL stringLength
+00000264: EBFFFFA8    ;   BL stringLength
 00000268:             ; 
 00000268: E24F1C02    ;   ADR R1, strsize
 0000026C: E1A00001    ;   MOV  R0,R1
 00000270: EF000003    ;   SVC  3
-00000274: E24F1F75    ;   ADR R1, s5
+00000274: E24F1F76    ;   ADR R1, s5
 00000278: E1A00001    ;   MOV  R0,R1
 0000027C: EF000003    ;   SVC  3
 00000280: E24F2E22    ;   ADR R2, is
 00000284: E1A00002    ;   MOV  R0,R2
 00000288: EF000003    ;   SVC  3
-0000028C: EBFFFF9F    ;   BL stringLength
+0000028C: EBFFFF9E    ;   BL stringLength
 00000290:             ; 
 00000290: E24F1F8A    ;   ADR R1, strsize
 00000294: E1A00001    ;   MOV  R0,R1
 00000298: EF000003    ;   SVC  3
-0000029C: E24F1F7D    ;   ADR R1, s6
+0000029C: E24F1F7E    ;   ADR R1, s6
 000002A0: E1A00001    ;   MOV  R0,R1
 000002A4: EF000003    ;   SVC  3
 000002A8: E24F2F92    ;   ADR R2, is
 000002AC: E1A00002    ;   MOV  R0,R2
 000002B0: EF000003    ;   SVC  3
-000002B4: EBFFFF95    ;   BL stringLength
+000002B4: EBFFFF94    ;   BL stringLength
 000002B8:             ; 
 000002B8: E24F1E25    ;   ADR R1, strsize
 000002BC: E1A00001    ;   MOV  R0,R1
 000002C0: EF000003    ;   SVC  3
-000002C4: E24F1F86    ;   ADR R1, s7
+000002C4: E24F1F87    ;   ADR R1, s7
 000002C8: E1A00001    ;   MOV  R0,R1
 000002CC: EF000003    ;   SVC  3
 000002D0: E24F2E27    ;   ADR R2, is
 000002D4: E1A00002    ;   MOV  R0,R2
 000002D8: EF000003    ;   SVC  3
-000002DC: EBFFFF8B    ;   BL stringLength
+000002DC: EBFFFF8A    ;   BL stringLength
 000002E0:             ; 
 000002E0: E24F1F9E    ;   ADR R1, strsize
 000002E4: E1A00001    ;   MOV  R0,R1
 000002E8: EF000003    ;   SVC  3
-000002EC: E24F1F8F    ;   ADR R1, s8
+000002EC: E24F1D09    ;   ADR R1, s8
 000002F0: E1A00001    ;   MOV  R0,R1
 000002F4: EF000003    ;   SVC  3
 000002F8: E24F2FA6    ;   ADR R2, is
 000002FC: E1A00002    ;   MOV  R0,R2
 00000300: EF000003    ;   SVC  3
-00000304: EBFFFF81    ;   BL stringLength
+00000304: EBFFFF80    ;   BL stringLength
 00000308:             ; 
 00000308: E24F1E2A    ;   ADR R1, strsize
 0000030C: E1A00001    ;   MOV  R0,R1
 00000310: EF000003    ;   SVC  3
-00000314: E24F1F96    ;   ADR R1, s9
+00000314: E24F1F97    ;   ADR R1, s9
 00000318: E1A00001    ;   MOV  R0,R1
 0000031C: EF000003    ;   SVC  3
 00000320: E24F2D0B    ;   ADR R2, is
 00000324: E1A00002    ;   MOV  R0,R2
 00000328: EF000003    ;   SVC  3
-0000032C: EBFFFF77    ;   BL stringLength
-00000330:             ;   ;; SVC 2
-00000330:             ; 
-00000330:             ; 
-00000330: E24F1FAB    ; part2   ADR R1, s1
-00000334: EBFFFF83    ;   BL  printstringReverse
-00000338: E24F1FAB    ;   ADR R1, s2
-0000033C: EBFFFF81    ;   BL  printstringReverse
-00000340: E24F1E2B    ;   ADR R1, s3
-00000344: EBFFFF7F    ;   BL  printstringReverse
-00000348: E24F1E2B    ;   ADR R1, s4
-0000034C: EBFFFF7D    ;   BL  printstringReverse
-00000350: E24F1E2B    ;   ADR R1, s5
-00000354: EBFFFF7B    ;   BL  printstringReverse
-00000358: E24F1E2B    ;   ADR R1, s6
-0000035C: EBFFFF79    ;   BL  printstringReverse
-00000360: E24F1FAD    ;   ADR R1, s7
-00000364: EBFFFF77    ;   BL  printstringReverse
-00000368: E24F1FAE    ;   ADR R1, s8
-0000036C: EBFFFF75    ;   BL  printstringReverse
-00000370: E24F1FAD    ;   ADR R1, s9
-00000374: EBFFFF73    ;   BL  printstringReverse
-00000378:             ;   ;; SVC 2
-00000378:             ; 
-00000378:             ; 
-00000378: E24F1FB2    ; part3   ADR R1, s8
-0000037C: E24F2D0B    ;   ADR R2, s9
-00000380: E24F3FE1    ;   ADR R3, buffer
-00000384: EBFFFF80    ;   BL  stringCopy
-00000388: E24F1FE3    ;   ADR R1, buffer
-0000038C: EBFFFF5A    ;   BL printstring
-00000390:             ; 
-00000390: EF000002    ;   SVC 2
-00000394:             ; 
-00000394:             ; 
-00000394:             ; 
+0000032C: EBFFFF76    ;   BL stringLength
+00000330: EF000002    ;   SVC 2
+00000334:             ; 
+00000334:             ; 
+00000334: E24F1E2B    ; part2   ADR R1, s1
+00000338: EBFFFF81    ;   BL  printstringReverse
+0000033C: E24F1FAD    ;   ADR R1, s2
+00000340: EBFFFF7F    ;   BL  printstringReverse
+00000344: E24F1FAE    ;   ADR R1, s3
+00000348: EBFFFF7D    ;   BL  printstringReverse
+0000034C: E24F1FAE    ;   ADR R1, s4
+00000350: EBFFFF7B    ;   BL  printstringReverse
+00000354: E24F1FAE    ;   ADR R1, s5
+00000358: EBFFFF79    ;   BL  printstringReverse
+0000035C: E24F1FAE    ;   ADR R1, s6
+00000360: EBFFFF77    ;   BL  printstringReverse
+00000364: E24F1FAF    ;   ADR R1, s7
+00000368: EBFFFF75    ;   BL  printstringReverse
+0000036C: E24F1D0B    ;   ADR R1, s8
+00000370: EBFFFF73    ;   BL  printstringReverse
+00000374: E24F1FAF    ;   ADR R1, s9
+00000378: EBFFFF71    ;   BL  printstringReverse
+0000037C: EF000002    ;   SVC 2
+00000380:             ; 
+00000380:             ; 
+00000380: E24F1FB5    ; part3   ADR R1, s8
+00000384: E24F2FB3    ;   ADR R2, s9
+00000388: E24F3FE3    ;   ADR R3, buffer
+0000038C: EBFFFF7E    ;   BL  stringCopy
+00000390: E24F1FE5    ;   ADR R1, buffer
+00000394: EBFFFF57    ;   BL printstring
+00000398:             ; 
+00000398: EF000002    ;   SVC 2
+0000039C:             ; 
+0000039C:             ; 
+0000039C:             ; 
 
 Symbol Table: Labels
 : buffer                            00000004  Local -- ARM
 : is                                00000068  Local -- ARM
 : strsize                           00000070  Local -- ARM
 : s1                                0000008C  Local -- ARM
-: s2                                00000094  Local -- ARM
-: s3                                00000098  Local -- ARM
-: s4                                000000A0  Local -- ARM
-: s5                                000000A8  Local -- ARM
-: s6                                000000B0  Local -- ARM
-: s7                                000000B4  Local -- ARM
-: s8                                000000B8  Local -- ARM
-: s9                                000000C4  Local -- ARM
-: pause                             000000EC  Local -- ARM
-: printstring                       000000FC  Local -- ARM
-: stringLength                      00000110  Local -- ARM
-: byte_loop_count                   00000118  Local -- ARM
-: printstringReverse                00000148  Local -- ARM
-: reverse_process                   00000154  Local -- ARM
-: byte_loop_out                     00000158  Local -- ARM
+: s2                                00000090  Local -- ARM
+: s3                                00000094  Local -- ARM
+: s4                                0000009C  Local -- ARM
+: s5                                000000A4  Local -- ARM
+: s6                                000000AC  Local -- ARM
+: s7                                000000B0  Local -- ARM
+: s8                                000000B4  Local -- ARM
+: s9                                000000C0  Local -- ARM
+: pause                             000000E8  Local -- ARM
+: printstring                       000000F8  Local -- ARM
+: stringLength                      0000010C  Local -- ARM
+: byte_loop_count                   00000114  Local -- ARM
+: printstringReverse                00000144  Local -- ARM
+: byte_loop_push                    00000144  Local -- ARM
+: byte_loop_pop                     0000015C  Local -- ARM
 : stringCopy                        0000018C  Local -- ARM
 : stringCopy_init                   0000018C  Local -- ARM
 : byte_loop_strcopy                 00000194  Local -- ARM
@@ -452,5 +526,5 @@ Symbol Table: Labels
 : byte_loop_strjoin                 000001AC  Local -- ARM
 : stringCopy_ending                 000001BC  Local -- ARM
 : part1                             000001C4  Local -- ARM
-: part2                             00000330  Local -- ARM
-: part3                             00000378  Local -- ARM
+: part2                             00000334  Local -- ARM
+: part3                             00000380  Local -- ARM
