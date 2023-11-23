@@ -214,11 +214,11 @@ loop1	LDR	R0, pYear	; r0 = pYear
 
 	PUSH {R6}		; r6 = day
 	PUSH {R1}		; r1 = month
-	PUSH {R4}		; r2 = year	
+	PUSH {R4}		; r4 = year	
 
 	BL printTheDate
 
-	POP {R4}		; r2 = year
+	POP {R4}		; r4 = year
 	POP {R1}		; r1 = month
 	POP {R6}		; r6 = day
 	
@@ -284,11 +284,11 @@ else1
 
 	PUSH {R6}		; r6 = day
 	PUSH {R1}		; r1 = month
-	PUSH {R4}		; r2 = year	
+	PUSH {R4}		; r4 = year	
 
 	BL printTheDate
 
-	POP {R4}		; r2 = year
+	POP {R4}		; r4 = year
 	POP {R1}		; r1 = month
 	POP {R6}		; r6 = day
 	
