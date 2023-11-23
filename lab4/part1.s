@@ -31,7 +31,7 @@ cLF		equ	10		; Line-feed character
 
 
 ;;; ;;;   Exactly what memory address does this actually go to??? 100 bytes/words from end?
-;;; ;;;     Explicit address to set stack to would be better.
+;;; ;;;     Explicit address to set stack to is better for debugging.
 	
 ;; 		DEFS	100		; this chunk of memory is for the stack
 ;; _stack					; This label is 'just after' the stack space
@@ -323,7 +323,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD	SP, SP, #12
+	ADD	SP, SP, #4*3
 	
 
 
