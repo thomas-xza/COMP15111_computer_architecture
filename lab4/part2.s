@@ -286,7 +286,7 @@ main
 	BL	printAgeHistory
 
 
-	ADD SP, SP, #4*14
+	ADD SP, SP, #4*15
 	
 
 	;; POP	{R0}			; Deallocate three 32-bit variables
@@ -324,7 +324,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD	SP, SP, #4*3
+	ADD	SP, SP, #4*15
 	
 
 

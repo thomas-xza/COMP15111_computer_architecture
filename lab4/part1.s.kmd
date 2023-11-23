@@ -26,7 +26,7 @@ KMD
 00000004:             ; 
 00000004:             ; cLF             equ     10              ; Line-feed character
 00000004:             ; 
-00000004:             ; 
+00000004:             ;         
 00000004:             ;         ;; ADR  SP, _stack      ; set SP pointing to the end of our stack
 00000004:             ;         
 00000004: EA000070    ;         B       main
@@ -69,7 +69,7 @@ KMD
 00000064:             ; 
 00000064: 00000017    ; pDay            DEFW    23              ;  pDay = 23    //or whatever is today's date
 00000068: 0000000B    ; pMonth          DEFW    11              ;  pMonth = 11  //or whatever is this month
-0000006C: 000007E7    ; pYear           DEFW    2023            ;  pYear = 2005 //or whatever is this year
+0000006C: 000007D5    ; pYear           DEFW    2005            ;  pYear = 2005
 00000070:             ; 
 00000070:             ; 
 00000070:             ; 
@@ -317,7 +317,7 @@ KMD
 000001E8: EBFFFFA1    ;         BL      printAgeHistory
 000001EC:             ; 
 000001EC:             ; 
-000001EC: E28DD038    ;         ADD SP, SP, #4*14
+000001EC: E28DD03C    ;         ADD SP, SP, #4*15
 000001F0:             ;         
 000001F0:             ; 
 000001F0:             ;         ;; POP  {R0}                    ; Deallocate three 32-bit variables
@@ -357,7 +357,7 @@ KMD
 00000208:             ;         
 00000208: EBFFFF99    ;         BL      printAgeHistory
 0000020C:             ; 
-0000020C: E28DD038    ;         ADD     SP, SP, #4*14
+0000020C: E28DD03C    ;         ADD     SP, SP, #4*15
 00000210:             ;         
 00000210:             ; 
 00000210:             ; 

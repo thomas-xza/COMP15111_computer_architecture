@@ -24,7 +24,7 @@ print_no	equ	4
 
 cLF		equ	10		; Line-feed character
 
-
+	
 	;; ADR	SP, _stack	; set SP pointing to the end of our stack
 	
 	B	main
@@ -47,7 +47,7 @@ willbe		DEFB	"This person will be ",0
 
 pDay		DEFW	23		;  pDay = 23    //or whatever is today's date
 pMonth		DEFW	11		;  pMonth = 11  //or whatever is this month
-pYear		DEFW	2023		;  pYear = 2005 //or whatever is this year
+pYear		DEFW	2005		;  pYear = 2005
 
 
 
@@ -285,7 +285,7 @@ main
 	BL	printAgeHistory
 
 
-	ADD SP, SP, #4*14
+	ADD SP, SP, #4*15
 	
 
 	;; POP	{R0}			; Deallocate three 32-bit variables
@@ -323,7 +323,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD	SP, SP, #4*3
+	ADD	SP, SP, #4*15
 	
 
 
