@@ -10,7 +10,7 @@
 ;;; ;;;   LOG OF WORKING CHANGES:
 ;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's GUI
 ;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
-
+;;; ;;;   - commented out r8 and r9 from printAgeHistory method
 
 _stack		equ	0x1000
 	
@@ -46,9 +46,9 @@ today		DEFB	" today!",0
 willbe		DEFB	"This person will be ",0
 		ALIGN
 
-pDay		DEFW	23		;  pDay = 23    //or whatever is today's date
-pMonth		DEFW	11		;  pMonth = 11  //or whatever is this month
-pYear		DEFW	2023		;  pYear = 2005 //or whatever is this year
+pDay		DEFW	23		;  pDay = 23    //  or whatever is today's date
+pMonth		DEFW	11		;  pMonth = 11  //  or whatever is this month
+pYear		DEFW	2005		;  pYear = 2005 //  don't change it
 
 
 
@@ -74,23 +74,26 @@ printAgeHistory
 
 ;;;   Don't know what the exercise means "there are some other registers which
 ;;;   this method is using" because I don't agree!
-;;;   Anyway just saving them all instead.
+;;;   Anyway just save them all instead.
 	
-	STMFD SP!, {R0-R3}
-	STMFD SP!, {R7-R14}
-	
-	STMFD SP!, {R4-R6}
+	STMFD SP!, {R0-R12}
 
+	
 ;for part 1
 ;replace the PUSH instructions given above with one STMFD instruction
 
 
+	;; LDR	R6, [SP, #(3 + 2) * 4]	; load 3rd item on stack to r6
+	;; LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
+	;; LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 
-	LDR	R6, [SP, #(3 + 2) * 4]	; load 3rd item on stack to r6
-	LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
-	LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
+	MOV r6, r0
+	MOV r8, r0
+	MOV r9, r0
+	
 
-;;;   part 2, cut above lines in favour of loading at start
+	
+;;;   part 2, cut above lines in favour of loading at start?
 	
 	
 ;   year = bYear + 1
@@ -286,7 +289,7 @@ main
 	BL	printAgeHistory
 
 
-	ADD SP, SP, #4*15
+	ADD SP, SP, #4*13
 	
 
 	;; POP	{R0}			; Deallocate three 32-bit variables
@@ -324,7 +327,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD	SP, SP, #4*15
+	ADD	SP, SP, #4*13
 	
 
 

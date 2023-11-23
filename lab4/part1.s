@@ -69,14 +69,14 @@ printAgeHistory
 
 	;; PUSH	{R6}			; callee saves three registers
 	;; PUSH	{R5}
-	;; PUSH	{R4}
+m	;; PUSH	{R4}
 
 ;;;   Don't know what the exercise means "there are some other registers which
 ;;;   this method is using" because I don't agree!
 ;;;   Anyway just saving them all instead.
 	
 	STMFD SP!, {R0-R3}
-	STMFD SP!, {R7-R14}
+	STMFD SP!, {R7-R12}
 	
 	STMFD SP!, {R4-R6}
 
@@ -285,7 +285,7 @@ main
 	BL	printAgeHistory
 
 
-	ADD SP, SP, #4*15
+	ADD SP, SP, #4*13
 	
 
 	;; POP	{R0}			; Deallocate three 32-bit variables
@@ -323,7 +323,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD	SP, SP, #4*15
+	ADD	SP, SP, #4*13
 	
 
 
