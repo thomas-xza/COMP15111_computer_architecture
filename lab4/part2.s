@@ -8,13 +8,16 @@
 
 
 ;;; ;;;   LOG OF WORKING CHANGES:
-;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's GUI
-;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
+;;; ;;;   - hardcoded _stack address to 0x1000, to be able to find it with Bennett's GUI
+;;; ;;;       - can be swapped with dynamic stack without issues (e.g. at end of exercise)
+;;; ;;;	      - also edited final CMP with _stack address, again can be swapped back
 ;;; ;;;   - commented out r8 and r9 from printAgeHistory method
 
+	
 _stack		equ	0x1000
 	
 	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
+
 	
 ; COMP15111 lab 4 - Template file
 
@@ -76,7 +79,10 @@ printAgeHistory
 ;;;   this method is using" because I don't agree!
 ;;;   Anyway just save them all instead.
 	
-	STMFD SP!, {R0-R12}
+        STMFD SP!, {R0-R3}
+	STMFD SP!, {R7-R12}
+
+	STMFD SP!, {R4-R6}
 
 	
 ;for part 1
@@ -87,13 +93,15 @@ printAgeHistory
 	;; LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
 	;; LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 
-	MOV r6, r0
-	MOV r8, r0
-	MOV r9, r0
+	MOV r6, r9
+	MOV r1, r8
+	MOV r2, r7
 	
 
 	
-;;;   part 2, cut above lines in favour of loading at start?
+;;;   part 2, cut above loading from stack in favour of loading via registers, presumably.
+;;;   saves memory i/o.
+	
 	
 	
 ;   year = bYear + 1

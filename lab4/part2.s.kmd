@@ -1,5 +1,6 @@
 KMD
 00000000:             ; 
+00000000:             ; 
 00000000:             ; ;;; ;;;  "Don't optimise until you've measured"
 00000000:             ; ;;; ;;;         - David Patterson, Computer Organization (RISC-V), 6th edition
 00000000:             ; 
@@ -8,14 +9,16 @@ KMD
 00000000:             ; 
 00000000:             ; 
 00000000:             ; ;;; ;;;   LOG OF WORKING CHANGES:
-00000000:             ; ;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's G
-                      ; UI
-00000000:             ; ;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
+00000000:             ; ;;; ;;;   - hardcoded _stack address to 0x1000, to be able to find it with Bennett's GUI
+00000000:             ; ;;; ;;;       - can be swapped with dynamic stack without issues (e.g. at end of exercise)
+00000000:             ; ;;; ;;;       - also edited final CMP with _stack address, again can be swapped back
+00000000:             ; ;;; ;;;   - commented out r8 and r9 from printAgeHistory method
 00000000:             ; 
-00000000:             ; 
+00000000:             ;         
 00000000:             ; _stack          equ     0x1000
 00000000:             ;         
 00000000: E3A0DA01    ;         MOV     SP, #_stack             ; set SP to point to hardcoded location of _stack
+00000004:             ; 
 00000004:             ;         
 00000004:             ; ; COMP15111 lab 4 - Template file
 00000004:             ; 
@@ -26,14 +29,14 @@ KMD
 00000004:             ; 
 00000004:             ; cLF             equ     10              ; Line-feed character
 00000004:             ; 
-00000004:             ;         
+00000004:             ; 
 00000004:             ;         ;; ADR  SP, _stack      ; set SP pointing to the end of our stack
 00000004:             ;         
 00000004: EA000070    ;         B       main
 00000008:             ; 
 00000008:             ; 
 00000008:             ; ;;; ;;;   Exactly what memory address does this actually go to??? 100 bytes/words from end?
-00000008:             ; ;;; ;;;     Explicit address to set stack to is better for debugging.
+00000008:             ; ;;; ;;;     Explicit address to set stack to would be better, for debugging.
 00000008:             ;         
 00000008:             ; ;;              DEFS    100             ; this chunk of memory is for the stack
 00000008:             ; ;; _stack                                       ; This label is 'just after' the stack space
@@ -67,9 +70,9 @@ KMD
 00000063: 00          ; 
 00000064:             ;                 ALIGN
 00000064:             ; 
-00000064: 00000017    ; pDay            DEFW    23              ;  pDay = 23    //or whatever is today's date
-00000068: 0000000B    ; pMonth          DEFW    11              ;  pMonth = 11  //or whatever is this month
-0000006C: 000007D5    ; pYear           DEFW    2005            ;  pYear = 2005
+00000064: 00000017    ; pDay            DEFW    23              ;  pDay = 23    //  or whatever is today's date
+00000068: 0000000B    ; pMonth          DEFW    11              ;  pMonth = 11  //  or whatever is this month
+0000006C: 000007D5    ; pYear           DEFW    2005            ;  pYear = 2005 //  don't change it
 00000070:             ; 
 00000070:             ; 
 00000070:             ; 
@@ -91,27 +94,34 @@ KMD
 00000074:             ; 
 00000074:             ;         ;; PUSH {R6}                    ; callee saves three registers
 00000074:             ;         ;; PUSH {R5}
-00000074:             ; m       ;; PUSH {R4}
+00000074:             ;         ;; PUSH {R4}
 00000074:             ; 
 00000074:             ; ;;;   Don't know what the exercise means "there are some other registers which
 00000074:             ; ;;;   this method is using" because I don't agree!
-00000074:             ; ;;;   Anyway just saving them all instead.
+00000074:             ; ;;;   Anyway just save them all instead.
 00000074:             ;         
 00000074: E92D000F    ;         STMFD SP!, {R0-R3}
 00000078: E92D1F80    ;         STMFD SP!, {R7-R12}
-0000007C:             ;         
+0000007C:             ; 
 0000007C: E92D0070    ;         STMFD SP!, {R4-R6}
 00000080:             ; 
+00000080:             ;         
 00000080:             ; ;for part 1
 00000080:             ; ;replace the PUSH instructions given above with one STMFD instruction
 00000080:             ; 
 00000080:             ; 
+00000080:             ;         ;; LDR  R6, [SP, #(3 + 2) * 4]  ; load 3rd item on stack to r6
+00000080:             ;         ;; LDR  R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
+00000080:             ;         ;; LDR  R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 00000080:             ; 
-00000080: E59D6014    ;         LDR     R6, [SP, #(3 + 2) * 4]  ; load 3rd item on stack to r6
-00000084: E59D1010    ;         LDR     R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
-00000088: E59D200C    ;         LDR     R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
+00000080: E1A06009    ;         MOV r6, r9
+00000084: E1A01008    ;         MOV r1, r8
+00000088: E1A02007    ;         MOV r2, r7
+0000008C:             ;         
 0000008C:             ; 
-0000008C:             ; ;;;   part 2, cut above lines in favour of loading at start
+0000008C:             ;         
+0000008C:             ; ;;;   part 2, cut above loading from stack in favour of loading via registers, presumably
+0000008C:             ;         
 0000008C:             ;         
 0000008C:             ;         
 0000008C:             ; ;   year = bYear + 1
@@ -439,7 +449,6 @@ Symbol Table: Labels
 : pYear                             0000006C  Local -- ARM
 : sYear                             00000070  Local -- ARM
 : printAgeHistory                   00000074  Local -- ARM
-: m                                 00000074  Local -- ARM
 : loop1                             000000CC  Local -- ARM
 : end1                              0000012C  Local -- ARM
 : else1                             00000164  Local -- ARM
