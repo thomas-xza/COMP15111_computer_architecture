@@ -249,15 +249,15 @@ main
 ;;; ;;;  Original above.
 	
 	LDR	R9, pDay
- 	STMFD SP!, {R9}
+ 	;; STMFD SP!, {R9}
 
 	;; PUSH	{R0}			; Stack first parameter
 	LDR	R8, pMonth
- 	STMFD SP!, {R8}
+ 	;; STMFD SP!, {R8}
 
 	;; PUSH	{R1}			; Stack second parameter
 	LDR	R7, sYear
- 	STMFD SP!, {R7}
+ 	;; STMFD SP!, {R7}
 
 	;; PUSH	{R2}			; Stack third parameter
 
@@ -273,10 +273,12 @@ main
 	BL	printAgeHistory
 
 
+	ADD SP, SP, #12
+	
 
-	POP	{R0}			; Deallocate three 32-bit variables
-	POP	{R0}
-	POP	{R0}
+	;; POP	{R0}			; Deallocate three 32-bit variables
+	;; POP	{R0}
+	;; POP	{R0}
 
 ;for part 1
 ;Replace the three POP instructions mentioned above with a single instruction that doesn't involve memory access.
@@ -303,11 +305,13 @@ main
 	
 	BL	printAgeHistory
 
+	ADD SP, SP, #12
+	
 
 
-        POP	{R0}			; Deallocate three 32-bit variables
-	POP	{R0}
-	POP	{R0}
+        ;; POP	{R0}			; Deallocate three 32-bit variables
+	;; POP	{R0}
+	;; POP	{R0}
 
 ;for part 1
 ;Replace the three POP instructions mentioned above with a single instruction that doesn't involve memory access.
@@ -323,11 +327,15 @@ main
 	ADRLNE	R0, whoops1		; Oh dear!
 	SVCNE	print_str		;
 
+
+	
 	;; ADRL	R0, _stack		; Have you balanced pushes & pops?
 	;; CMP	SP, R0			;
 
 	CMP	SP, #_stack		;
 
+
+	
 	ADRLNE	R0, whoops2		; Oh no!!
 	SVCNE	print_str		; End of test code
 
