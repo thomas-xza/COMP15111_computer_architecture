@@ -1,17 +1,17 @@
 
-Q1) After executing the "LDR R0" instruction, the value of PC is (0x0002) and of R0 is (0x0004)
+Q1) After executing the "LDR R0" instruction, the value of PC is (0x00000002) and of R0 is (0x00000004)
 
 r0 = 0x0002
 PC = 0x0004
 
 
-Q2) After executing the "LDR R1" instruction, the value of PC is (0x000A) and of R1 is (0x0008)
+Q2) After executing the "LDR R1" instruction, the value of PC is (0x0000000A) and of R1 is (0x00000008)
 
 r1 = 0x000A
 PC = 0x0008
 
 
-Q3) After executing the "LDR R2" instruction, the value of PC is (0x0001) and of R2 is (0x000C)
+Q3) After executing the "LDR R2" instruction, the value of PC is (0x00000001) and of R2 is (0x0000000C)
 
 r2 = 0x0001
 PC = 0x000C
@@ -21,13 +21,13 @@ PC = 0x000C
 not PC/R15)
 
 
-Q4) The first time the "MUL" instruction is executed, the value of register (r5) changes from (0x0002) to (0x004)
+Q4) The first time the "MUL" instruction is executed, the value of register (r5) changes from (0x00000002) to (0x0000004)
 
 r5 = 0x0002
 r5 = 0x0004
 
 
-Q5) The first time the "SUB" instruction is executed, the value of register (r3) changes from (0x000A) to (0x0009)
+Q5) The first time the "SUB" instruction is executed, the value of register (r3) changes from (0x0000000A) to (0x00000009)
 
 r3 = 0x000A
 r3 = 0x0009
@@ -48,7 +48,7 @@ evaluates to equal:
   CMP r3, #1
 
 
-Q7) register (r3) counts down from (0x000A) to (0x0001)
+Q7) register (r3) counts down from (0x0000000A) to (0x00000001)
 
 r3 initially loads the value of d (0x0000).
 However, the value of r1, which is y (0x000A) is copied to r3.
