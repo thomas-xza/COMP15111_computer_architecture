@@ -8,12 +8,12 @@
 
 ;;; ;;;   LOG OF WORKING CHANGES:
 ;;; ;;;   - hardcoded start of _stack address to 0x1000, to find it with Bennett's GUI
-;;; ;;;   - can always be replaced with real stack without issues (e.g. at end of exercise)
+;;; ;;;   - can always be replaced with dynamic stack without issues (e.g. at end of exercise)
 
 
-_stack		equ	0x1000
+;; _stack		equ	0x1000
 	
-	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
+;; 	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
 	
 ; COMP15111 lab 4 - Template file
 
@@ -25,22 +25,25 @@ print_no	equ	4
 cLF		equ	10		; Line-feed character
 
 	
-	;; ADR	SP, _stack	; set SP pointing to the end of our stack
+	ADR	SP, _stack	; set SP pointing to the end of our stack
 	
 	B	main
 
 
 ;;; ;;;   Exactly what memory address does this actually go to??? 100 bytes/words from end?
 ;;; ;;;     Explicit address to set stack to is better for debugging.
+
+;;; ;;;   Boosted size of stack to write Assembly faster.
 	
-;; 		DEFS	100		; this chunk of memory is for the stack
-;; _stack					; This label is 'just after' the stack space
+	
+		DEFS	2048		; this chunk of memory is for the stack
+_stack					; This label is 'just after' the stack space
 
 
 wasborn		DEFB	"This person was born on ",0
 was		DEFB	"This person was ",0
 on		DEFB	" on ",0
-is		DEFB	"This person is ",0
+is		DEFB	"If the year is 2005, this person is ",0
 today		DEFB	" today!",0
 willbe		DEFB	"This person will be ",0
 		ALIGN
@@ -437,10 +440,10 @@ main
 
 
 	
-	;; ADRL	R0, _stack		; Have you balanced pushes & pops?
-	;; CMP	SP, R0			;
+	ADRL	R0, _stack		; Have you balanced pushes & pops?
+	CMP	SP, R0			;
 
-	CMP	SP, #_stack		; Have you balanced pushes & pops?
+	;; CMP	SP, #_stack		; Have you balanced pushes & pops?
 					; [hardcoded version]
 
 
