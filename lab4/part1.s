@@ -316,8 +316,10 @@ main
 	ADRLNE	R0, whoops1		; Oh dear!
 	SVCNE	print_str		;
 
-	ADRL	R0, _stack		; Have you balanced pushes & pops?
-	CMP	SP, R0			;
+	;; ADRL	R0, _stack		; Have you balanced pushes & pops?
+	;; CMP	SP, R0			;
+
+	CMP	SP, #_stack		;
 
 	ADRLNE	R0, whoops2		; Oh no!!
 	SVCNE	print_str		; End of test code

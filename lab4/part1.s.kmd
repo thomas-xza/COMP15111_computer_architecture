@@ -263,7 +263,7 @@ KMD
 000001C4:             ; 
 000001C4:             ; ; def main():
 000001C4:             ; main
-000001C4: E59F40DC    ;         LDR     R4, =&12345678          ; Test value - not part of python compilation
+000001C4: E59F40D4    ;         LDR     R4, =&12345678          ; Test value - not part of python compilation
 000001C8: E1A05004    ;         MOV     R5, R4                  ; See later if these registers corrupted
 000001CC: E1A06004    ;         MOV     R6, R4
 000001D0:             ; 
@@ -343,48 +343,49 @@ KMD
 00000228:             ; 
 00000228:             ; 
 00000228:             ;         ; Now check to see if register values intact (Not part of Java)
-00000228: E59F0078    ;         LDR     R0, =&12345678          ; Test value
+00000228: E59F0070    ;         LDR     R0, =&12345678          ; Test value
 0000022C: E1540000    ;         CMP     R4, R0                  ; Did you preserve these registers?
 00000230: 01550000    ;         CMPEQ   R5, R0                  ;
 00000234: 01560000    ;         CMPEQ   R6, R0                  ;
 00000238:             ; 
-00000238: 128F0018    ;         ADRLNE  R0, whoops1             ; Oh dear!
+00000238: 128F0010    ;         ADRLNE  R0, whoops1             ; Oh dear!
 0000023C: 1F000003    ;         SVCNE   print_str               ;
 00000240:             ; 
-00000240: E28F0F6E    ;         ADRL    R0, _stack              ; Have you balanced pushes & pops?
-00000244: E2800B03    ; 
-00000248: E15D0000    ;         CMP     SP, R0                  ;
+00000240:             ;         ;; ADRL R0, _stack              ; Have you balanced pushes & pops?
+00000240:             ;         ;; CMP  SP, R0                  ;
+00000240:             ; 
+00000240: E35D0A01    ;         CMP     SP, #_stack             ;
+00000244:             ; 
+00000244: 128F002A    ;         ADRLNE  R0, whoops2             ; Oh no!!
+00000248: 1F000003    ;         SVCNE   print_str               ; End of test code
 0000024C:             ; 
-0000024C: 128F002A    ;         ADRLNE  R0, whoops2             ; Oh no!!
-00000250: 1F000003    ;         SVCNE   print_str               ; End of test code
-00000254:             ; 
-00000254:             ; ; }// end of main
-00000254: EF000002    ;                 SVC     stop
-00000258:             ; 
-00000258:             ; 
-00000258: 0A 2A 2A 20 ; whoops1         DEFB    "\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
-0000025C: 42 55 54 20 ; 
-00000260: 59 4F 55 20 ; 
-00000264: 43 4F 52 52 ; 
-00000268: 55 50 54 45 ; 
-0000026C: 44 20 52 45 ; 
-00000270: 47 49 53 54 ; 
-00000274: 45 52 53 21 ; 
-00000278: 20 20 2A 2A ; 
-0000027C: 0A 00       ; 
-0000027E: 0A 2A 2A 20 ; whoops2         DEFB    "\n** BUT YOUR STACK DIDN'T BALANCE!  **\n", 0
-00000282: 42 55 54 20 ; 
-00000286: 59 4F 55 52 ; 
-0000028A: 20 53 54 41 ; 
-0000028E: 43 4B 20 44 ; 
-00000292: 49 44 4E 27 ; 
-00000296: 54 20 42 41 ; 
-0000029A: 4C 41 4E 43 ; 
-0000029E: 45 21 20 20 ; 
-000002A2: 2A 2A 0A 00 ; 
-000002A6:             ; 
-000002A6: 00 00       ; (padding)
-000002A8: 12345678    ; Remaining literals
+0000024C:             ; ; }// end of main
+0000024C: EF000002    ;                 SVC     stop
+00000250:             ; 
+00000250:             ; 
+00000250: 0A 2A 2A 20 ; whoops1         DEFB    "\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
+00000254: 42 55 54 20 ; 
+00000258: 59 4F 55 20 ; 
+0000025C: 43 4F 52 52 ; 
+00000260: 55 50 54 45 ; 
+00000264: 44 20 52 45 ; 
+00000268: 47 49 53 54 ; 
+0000026C: 45 52 53 21 ; 
+00000270: 20 20 2A 2A ; 
+00000274: 0A 00       ; 
+00000276: 0A 2A 2A 20 ; whoops2         DEFB    "\n** BUT YOUR STACK DIDN'T BALANCE!  **\n", 0
+0000027A: 42 55 54 20 ; 
+0000027E: 59 4F 55 52 ; 
+00000282: 20 53 54 41 ; 
+00000286: 43 4B 20 44 ; 
+0000028A: 49 44 4E 27 ; 
+0000028E: 54 20 42 41 ; 
+00000292: 4C 41 4E 43 ; 
+00000296: 45 21 20 20 ; 
+0000029A: 2A 2A 0A 00 ; 
+0000029E:             ; 
+0000029E: 00 00       ; (padding)
+000002A0: 12345678    ; Remaining literals
 
 Symbol Table: Labels
 : _stack                            00001000  Value
@@ -410,5 +411,5 @@ Symbol Table: Labels
 : end2                              000001AC  Local -- ARM
 : another                           000001B4  Local -- ARM
 : main                              000001C4  Local -- ARM
-: whoops1                           00000258  Local -- ARM
-: whoops2                           0000027E  Local -- ARM
+: whoops1                           00000250  Local -- ARM
+: whoops2                           00000276  Local -- ARM
