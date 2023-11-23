@@ -9,7 +9,8 @@
 ;;; ;;;   LOG OF WORKING CHANGES:
 ;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's GUI
 ;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
-	
+
+
 _stack		equ	0x1000
 	
 	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
@@ -26,7 +27,7 @@ cLF		equ	10		; Line-feed character
 
 	;; ADR	SP, _stack	; set SP pointing to the end of our stack
 	
-		B	main
+	B	main
 
 
 ;;; ;;;   Exactly what memory address does this actually go to??? 100 bytes/words from end?
@@ -77,36 +78,42 @@ printAgeHistory
 
 
 
-	LDR	R6, [SP, #(3 + 2) * 4]	; Get parameters from stack
-	LDR	R1, [SP, #(3 + 1) * 4]
-	LDR	R2, [SP, #(3 + 0) * 4]
+	LDR	R6, [SP, #(3 + 2) * 4]	; load 3rd item on stack to r6
+	LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
+	LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 
 ;   year = bYear + 1
-	ADD	R4, R2, #1
+	ADD	R4, R2, #1	; r4 = r2 + 1
 ;   age = 1;
-	MOV	R5, #1
-	MOV	R8, #1
+	MOV	R5, #1		; r5 = 1
+	
+;;; ;;;  Unused reg
+	;; MOV	R8, #1		; r8 = 1
 
 ; print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear))
-	ADRL	R0, wasborn
-	SVC	print_str
-	MOV	R0, R6
-	SVC	print_no
-	MOV	R0, #'/'
-	SVC	print_char
-	MOV	R0, R1
-	SVC	print_no
-	MOV	R0, #'/'
-	SVC	print_char
-	MOV	R0, R2
-	SVC	print_no
-	MOV	R0, #cLF
-	SVC	print_char
+	
+	ADRL	R0, wasborn	; r0 = address of `wasborn`
+	SVC	print_str	; out
+	MOV	R0, R6		; r0 = r6 (bday)
+	SVC	print_no	; out
+	MOV	R0, #'/'	; r0 = '/' ascii n
+	SVC	print_char	; out
+	MOV	R0, R1		; r0 = r1 (bmonth)
+	SVC	print_no	; out
+	MOV	R0, #'/'	; r0 = '/' ascii n
+	SVC	print_char	; out
+	MOV	R0, R2		; r0 = r2 (byear)
+	SVC	print_no	; out
+	MOV	R0, #cLF	; r0 = newline char
+	SVC	print_char	; out
 
+;;; ;;;  http://www-mdp.eng.cam.ac.uk/web/library/enginfo/mdp_micro/lecture3/lecture3-3-3.html
+	
 ; this code does: while year < pYear //{
-loop1	LDR	R0, pYear
-	CMP	R4, R0
-	BHS	end1		; Years are unsigned
+loop1	LDR	R0, pYear	; r0 = pYear
+	CMP	R4, R0		; r4 == r0 ?
+	BHS	end1		; branch to end1 if r4 > r0
+
 ; for part 4, should be changed to:
 ; while year < pYear or
 ;				(year == pYear and bMonth < pMonth) or
@@ -128,45 +135,48 @@ loop1	LDR	R0, pYear
 
 
 ;  print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
-	ADRL	R0, was
-	SVC	print_str
-	MOV	R0, R5
-	SVC	print_no
-	ADRL	R0, on
-	SVC	print_str
-	MOV	R0, R6
-	SVC	print_no
-	MOV	R0, #'/'
-	SVC	print_char
-	MOV	R0, R1
-	SVC	print_no
-	MOV	R0, #'/'
-	SVC	print_char
-	MOV	R0, R4
-	SVC	print_no
-	MOV	R0, #cLF
-	SVC	print_char
+	ADRL	R0, was		; r0 = `was` address
+	SVC	print_str	; out
+	MOV	R0, R5		; r0 = r5 (age)
+	SVC	print_no	; out
+	ADRL	R0, on		; r0 = `on` address
+	SVC	print_str	; out
+	MOV	R0, R6		; r0 = r6 (bday)
+	SVC	print_no	; out
+	MOV	R0, #'/'	; r0 = '/' ascii
+	SVC	print_char	; out
+	MOV	R0, R1		; r0 = r1 (bmonth)
+	SVC	print_no	; out
+	MOV	R0, #'/'	; r0 = '/' ascii
+	SVC	print_char	; out
+	MOV	R0, R4		; r0 = r4 (year)
+	SVC	print_no	; out
+	MOV	R0, #cLF	; r0 = '\n' ascii
+	SVC	print_char	; out
 
 	; year = year + 1
-	ADD	R4, R4, #1
-	ADD	R8, R4, #1
-	ADD	R9, R8, #1
+	ADD	R4, R4, #1	; r4 += 1	(year += 1)
+
+;;; ;;;  Unused regs
+	;; ADD	R8, R4, #1	; r8 = r4 + 1	(year + 2)
+	;; ADD	R9, R8, #1	; r9 = r8 + 1	(year + 3)
+	
 	; age = age + 1
-	ADD	R5, R5, #1
-	; //}
-	B	loop1
+	ADD	R5, R5, #1	; r5 += 1	(age + 1)
+
+	B	loop1		; branch to loop1
 
 end1
 ; this code does: if (bMonth == pMonth):
 ; for part 4, should be changed to:
 ; if (bMonth == pMonth and bDay == pDay):
 
-	LDR	R0, pMonth
-	CMP	R1, R0
+	LDR	R0, pMonth	; r0 = `pMonth` address
+	CMP	R1, R0		; r1 == r0?
 	BNE	else1
 
 ; print("This person is " + str(age) + " today!")
-	ADRL	R0, is
+	ADRL	R0, is		
 	SVC	print_str
 	MOV	R0, R5
 	SVC	print_no
@@ -234,6 +244,7 @@ main
 	;; PUSH	{R1}			; Stack second parameter
 	;; LDR	R0, sYear
 	;; PUSH	{R0}			; Stack third parameter
+
 
 ;;; ;;;  Original above, looks buggy? But works.
 	

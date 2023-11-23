@@ -11,7 +11,8 @@ KMD
 00000000:             ; ;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's G
                       ; UI
 00000000:             ; ;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
-00000000:             ;         
+00000000:             ; 
+00000000:             ; 
 00000000:             ; _stack          equ     0x1000
 00000000:             ;         
 00000000: E3A0DA01    ;         MOV     SP, #_stack             ; set SP to point to hardcoded location of _stack
@@ -28,7 +29,7 @@ KMD
 00000004:             ; 
 00000004:             ;         ;; ADR  SP, _stack      ; set SP pointing to the end of our stack
 00000004:             ;         
-00000004: EA000071    ;                 B       main
+00000004: EA00006E    ;         B       main
 00000008:             ; 
 00000008:             ; 
 00000008:             ; ;;; ;;;   Exactly what memory address does this actually go to??? 100 bytes/words from end?
@@ -99,280 +100,291 @@ KMD
 00000078:             ; 
 00000078:             ; 
 00000078:             ; 
-00000078: E59D6014    ;         LDR     R6, [SP, #(3 + 2) * 4]  ; Get parameters from stack
-0000007C: E59D1010    ;         LDR     R1, [SP, #(3 + 1) * 4]
-00000080: E59D200C    ;         LDR     R2, [SP, #(3 + 0) * 4]
+00000078: E59D6014    ;         LDR     R6, [SP, #(3 + 2) * 4]  ; load 3rd item on stack to r6
+0000007C: E59D1010    ;         LDR     R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
+00000080: E59D200C    ;         LDR     R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 00000084:             ; 
 00000084:             ; ;   year = bYear + 1
-00000084: E2824001    ;         ADD     R4, R2, #1
+00000084: E2824001    ;         ADD     R4, R2, #1      ; r4 = r2 + 1
 00000088:             ; ;   age = 1;
-00000088: E3A05001    ;         MOV     R5, #1
-0000008C: E3A08001    ;     MOV R8, #1
-00000090:             ; 
-00000090:             ; ; print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear))
-00000090: E24F0090    ;         ADRL    R0, wasborn
-00000094: EF000003    ;         SVC     print_str
-00000098: E1A00006    ;         MOV     R0, R6
-0000009C: EF000004    ;         SVC     print_no
-000000A0: E3A0002F    ;         MOV     R0, #'/'
-000000A4: EF000000    ;         SVC     print_char
-000000A8: E1A00001    ;         MOV     R0, R1
-000000AC: EF000004    ;         SVC     print_no
-000000B0: E3A0002F    ;         MOV     R0, #'/'
-000000B4: EF000000    ;         SVC     print_char
-000000B8: E1A00002    ;         MOV     R0, R2
-000000BC: EF000004    ;         SVC     print_no
-000000C0: E3A0000A    ;         MOV     R0, #cLF
-000000C4: EF000000    ;         SVC     print_char
-000000C8:             ; 
-000000C8:             ; ; this code does: while year < pYear //{
-000000C8: E51F0064    ; loop1   LDR     R0, pYear
-000000CC: E1540000    ;         CMP     R4, R0
-000000D0: 2A000016    ;         BHS     end1            ; Years are unsigned
-000000D4:             ; ; for part 4, should be changed to:
-000000D4:             ; ; while year < pYear or
-000000D4:             ; ;                               (year == pYear and bMonth < pMonth) or
-000000D4:             ; ;                               (year == pYear and bMonth == pMonth and bDay < pDay):
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; 
-000000D4:             ; ;  print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(yea
+00000088: E3A05001    ;         MOV     R5, #1          ; r5 = 1
+0000008C:             ;         
+0000008C:             ; ;;; ;;;  Unused reg
+0000008C:             ;         ;; MOV  R8, #1          ; r8 = 1
+0000008C:             ; 
+0000008C:             ; ; print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear))
+0000008C:             ;         
+0000008C: E24F008C    ;         ADRL    R0, wasborn     ; r0 = address of `wasborn`
+00000090: EF000003    ;         SVC     print_str       ; out
+00000094: E1A00006    ;         MOV     R0, R6          ; r0 = r6 (bday)
+00000098: EF000004    ;         SVC     print_no        ; out
+0000009C: E3A0002F    ;         MOV     R0, #'/'        ; r0 = '/' ascii n
+000000A0: EF000000    ;         SVC     print_char      ; out
+000000A4: E1A00001    ;         MOV     R0, R1          ; r0 = r1 (bmonth)
+000000A8: EF000004    ;         SVC     print_no        ; out
+000000AC: E3A0002F    ;         MOV     R0, #'/'        ; r0 = '/' ascii n
+000000B0: EF000000    ;         SVC     print_char      ; out
+000000B4: E1A00002    ;         MOV     R0, R2          ; r0 = r2 (byear)
+000000B8: EF000004    ;         SVC     print_no        ; out
+000000BC: E3A0000A    ;         MOV     R0, #cLF        ; r0 = newline char
+000000C0: EF000000    ;         SVC     print_char      ; out
+000000C4:             ; 
+000000C4:             ; ;;; ;;;  http://www-mdp.eng.cam.ac.uk/web/library/enginfo/mdp_micro/lecture3/lecture3-3-3.html
+000000C4:             ;         
+000000C4:             ; ; this code does: while year < pYear //{
+000000C4: E51F0060    ; loop1   LDR     R0, pYear       ; r0 = pYear
+000000C8: E1540000    ;         CMP     R4, R0          ; r4 == r0 ?
+000000CC: 2A000014    ;         BHS     end1            ; branch to end1 if r4 > r0
+000000D0:             ; 
+000000D0:             ; ; for part 4, should be changed to:
+000000D0:             ; ; while year < pYear or
+000000D0:             ; ;                               (year == pYear and bMonth < pMonth) or
+000000D0:             ; ;                               (year == pYear and bMonth == pMonth and bDay < pDay):
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; 
+000000D0:             ; ;  print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(yea
                       ; r))
-000000D4: E24F00BB    ;                 ADRL    R0, was
-000000D8: EF000003    ;                 SVC     print_str
-000000DC: E1A00005    ;                 MOV     R0, R5
-000000E0: EF000004    ;                 SVC     print_no
-000000E4: E24F00BA    ;                 ADRL    R0, on
-000000E8: EF000003    ;                 SVC     print_str
-000000EC: E1A00006    ;                 MOV     R0, R6
-000000F0: EF000004    ;                 SVC     print_no
-000000F4: E3A0002F    ;                 MOV     R0, #'/'
-000000F8: EF000000    ;                 SVC     print_char
-000000FC: E1A00001    ;                 MOV     R0, R1
-00000100: EF000004    ;                 SVC     print_no
-00000104: E3A0002F    ;                 MOV     R0, #'/'
-00000108: EF000000    ;                 SVC     print_char
-0000010C: E1A00004    ;                 MOV     R0, R4
-00000110: EF000004    ;                 SVC     print_no
-00000114: E3A0000A    ;                 MOV     R0, #cLF
-00000118: EF000000    ;                 SVC     print_char
+000000D0: E24F00B7    ;         ADRL    R0, was         ; r0 = `was` address
+000000D4: EF000003    ;         SVC     print_str       ; out
+000000D8: E1A00005    ;         MOV     R0, R5          ; r0 = r5 (age)
+000000DC: EF000004    ;         SVC     print_no        ; out
+000000E0: E24F00B6    ;         ADRL    R0, on          ; r0 = `on` address
+000000E4: EF000003    ;         SVC     print_str       ; out
+000000E8: E1A00006    ;         MOV     R0, R6          ; r0 = r6 (bday)
+000000EC: EF000004    ;         SVC     print_no        ; out
+000000F0: E3A0002F    ;         MOV     R0, #'/'        ; r0 = '/' ascii
+000000F4: EF000000    ;         SVC     print_char      ; out
+000000F8: E1A00001    ;         MOV     R0, R1          ; r0 = r1 (bmonth)
+000000FC: EF000004    ;         SVC     print_no        ; out
+00000100: E3A0002F    ;         MOV     R0, #'/'        ; r0 = '/' ascii
+00000104: EF000000    ;         SVC     print_char      ; out
+00000108: E1A00004    ;         MOV     R0, R4          ; r0 = r4 (year)
+0000010C: EF000004    ;         SVC     print_no        ; out
+00000110: E3A0000A    ;         MOV     R0, #cLF        ; r0 = '\n' ascii
+00000114: EF000000    ;         SVC     print_char      ; out
+00000118:             ; 
+00000118:             ;         ; year = year + 1
+00000118: E2844001    ;         ADD     R4, R4, #1      ; r4 += 1       (year += 1)
 0000011C:             ; 
-0000011C:             ;                 ; year = year + 1
-0000011C: E2844001    ;                 ADD     R4, R4, #1
-00000120: E2848001    ;        ADD      R8, R4, #1
-00000124: E2889001    ;        ADD      R9, R8, #1
-00000128:             ;                 ; age = age + 1
-00000128: E2855001    ;                 ADD     R5, R5, #1
-0000012C:             ;                 ; //}
-0000012C: EAFFFFE5    ;                 B       loop1
+0000011C:             ; ;;; ;;;  Unused regs
+0000011C:             ;         ;; ADD  R8, R4, #1      ; r8 = r4 + 1   (year + 2)
+0000011C:             ;         ;; ADD  R9, R8, #1      ; r9 = r8 + 1   (year + 3)
+0000011C:             ;         
+0000011C:             ;         ; age = age + 1
+0000011C: E2855001    ;         ADD     R5, R5, #1      ; r5 += 1       (age + 1)
+00000120:             ; 
+00000120: EAFFFFE7    ;         B       loop1           ; branch to loop1
+00000124:             ; 
+00000124:             ; end1
+00000124:             ; ; this code does: if (bMonth == pMonth):
+00000124:             ; ; for part 4, should be changed to:
+00000124:             ; ; if (bMonth == pMonth and bDay == pDay):
+00000124:             ; 
+00000124: E51F00C4    ;         LDR     R0, pMonth      ; r0 = `pMonth` address
+00000128: E1510000    ;         CMP     R1, R0          ; r1 == r0?
+0000012C: 1A00000A    ;         BNE     else1
 00000130:             ; 
-00000130:             ; end1
-00000130:             ; ; this code does: if (bMonth == pMonth):
-00000130:             ; ; for part 4, should be changed to:
-00000130:             ; ; if (bMonth == pMonth and bDay == pDay):
-00000130:             ; 
-00000130: E51F00D0    ;                 LDR     R0, pMonth
-00000134: E1510000    ;                 CMP     R1, R0
-00000138: 1A00000A    ;                 BNE     else1
-0000013C:             ; 
-0000013C:             ; ; print("This person is " + str(age) + " today!")
-0000013C: E24F000D    ;                 ADRL    R0, is
-00000140: E2400C01    ; 
-00000144: EF000003    ;                 SVC     print_str
-00000148: E1A00005    ;                 MOV     R0, R5
-0000014C: EF000004    ;                 SVC     print_no
-00000150: E24F0011    ;                 ADRL    R0, today
-00000154: E2400C01    ; 
-00000158: EF000003    ;                 SVC     print_str
-0000015C: E3A0000A    ;                 MOV     R0, #cLF
-00000160: EF000000    ;                 SVC     print_char
-00000164:             ; 
-00000164:             ; ; else
-00000164: EA000013    ;                 B       end2
-00000168:             ; else1
-00000168:             ; ; print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(
-                      ; year))
-00000168: E24F0021    ;                 ADRL    R0, willbe
-0000016C: E2400C01    ; 
-00000170: EF000003    ;                 SVC     print_str
-00000174: E1A00005    ;                 MOV     R0, R5
-00000178: EF000004    ;                 SVC     print_no
-0000017C: E24F0052    ;                 ADRL    R0, on
-00000180: E2400C01    ; 
-00000184: EF000003    ;                 SVC     print_str
-00000188: E1A00006    ;                 MOV     R0, R6
-0000018C: EF000004    ;                 SVC     print_no
-00000190: E3A0002F    ;                 MOV     R0, #'/'
-00000194: EF000000    ;                 SVC     print_char
-00000198: E1A00001    ;                 MOV     R0, R1
-0000019C: EF000004    ;                 SVC     print_no
-000001A0: E3A0002F    ;                 MOV     R0, #'/'
-000001A4: EF000000    ;                 SVC     print_char
-000001A8: E1A00004    ;                 MOV     R0, R4
-000001AC: EF000004    ;                 SVC     print_no
-000001B0: E3A0000A    ;                 MOV     R0, #cLF
-000001B4: EF000000    ;                 SVC     print_char
-000001B8:             ; 
-000001B8:             ; ; }// end of printAgeHistory
-000001B8:             ; end2
-000001B8:             ;         ;; POP  {R4}            ; callee saved registers
-000001B8:             ;         ;; POP  {R5}
-000001B8:             ;         ;; POP  {R6}
-000001B8:             ; 
-000001B8: E8BD0070    ;         LDMFD SP!, {R4-R6}
-000001BC:             ; 
-000001BC:             ; ;for part 1
-000001BC:             ; ;replace the POP instructions given above with one LDMFD instruction
-000001BC:             ; 
-000001BC: E1A0F00E    ;                 MOV     PC, LR
-000001C0:             ; 
-000001C0: 41 6E 6F 74 ; another         DEFB    "Another person",10,0
-000001C4: 68 65 72 20 ; 
-000001C8: 70 65 72 73 ; 
-000001CC: 6F 6E 0A 00 ; 
-000001D0:             ;                 ALIGN
+00000130:             ; ; print("This person is " + str(age) + " today!")
+00000130: E24F0001    ;         ADRL    R0, is          
+00000134: E2400C01    ; 
+00000138: EF000003    ;         SVC     print_str
+0000013C: E1A00005    ;         MOV     R0, R5
+00000140: EF000004    ;         SVC     print_no
+00000144: E24F0005    ;         ADRL    R0, today
+00000148: E2400C01    ; 
+0000014C: EF000003    ;         SVC     print_str
+00000150: E3A0000A    ;         MOV     R0, #cLF
+00000154: EF000000    ;         SVC     print_char
+00000158:             ; 
+00000158:             ; ; else
+00000158: EA000013    ;         B       end2
+0000015C:             ; else1
+0000015C:             ; ; print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(
+                      ; year    ))
+0000015C: E24F0015    ;         ADRL    R0, willbe
+00000160: E2400C01    ; 
+00000164: EF000003    ;         SVC     print_str
+00000168: E1A00005    ;         MOV     R0, R5
+0000016C: EF000004    ;         SVC     print_no
+00000170: E24F0046    ;         ADRL    R0, on
+00000174: E2400C01    ; 
+00000178: EF000003    ;         SVC     print_str
+0000017C: E1A00006    ;         MOV     R0, R6
+00000180: EF000004    ;         SVC     print_no
+00000184: E3A0002F    ;         MOV     R0, #'/'
+00000188: EF000000    ;         SVC     print_char
+0000018C: E1A00001    ;         MOV     R0, R1
+00000190: EF000004    ;         SVC     print_no
+00000194: E3A0002F    ;         MOV     R0, #'/'
+00000198: EF000000    ;         SVC     print_char
+0000019C: E1A00004    ;         MOV     R0, R4
+000001A0: EF000004    ;         SVC     print_no
+000001A4: E3A0000A    ;         MOV     R0, #cLF
+000001A8: EF000000    ;         SVC     print_char
+000001AC:             ; 
+000001AC:             ; ; }// end of printAgeHistory
+000001AC:             ; end2
+000001AC:             ;                 ;; POP  {R4}            ; callee saved registers
+000001AC:             ;                 ;; POP  {R5}
+000001AC:             ;                 ;; POP  {R6}
+000001AC:             ; 
+000001AC: E8BD0070    ;         LDMFD SP!, {R4-R6}
+000001B0:             ; 
+000001B0:             ; ;for part 1
+000001B0:             ; ;replace the POP instructions given above with one LDMFD instruction
+000001B0:             ; 
+000001B0: E1A0F00E    ;         MOV     PC, LR
+000001B4:             ; 
+000001B4:             ; another
+000001B4: 41 6E 6F 74 ;         DEFB    "Another person",10,0
+000001B8: 68 65 72 20 ; 
+000001BC: 70 65 72 73 ; 
+000001C0: 6F 6E 0A 00 ; 
+000001C4:             ;         ALIGN
+000001C4:             ; 
+000001C4:             ; 
+000001C4:             ; 
+000001C4:             ; 
+000001C4:             ; 
+000001C4:             ; 
+000001C4:             ; ; def main():
+000001C4:             ; main
+000001C4: E59F40DC    ;         LDR     R4, =&12345678          ; Test value - not part of python compilation
+000001C8: E1A05004    ;         MOV     R5, R4                  ; See later if these registers corrupted
+000001CC: E1A06004    ;         MOV     R6, R4
 000001D0:             ; 
 000001D0:             ; 
+000001D0:             ; ; printAgeHistory(pDay, pMonth, 2000)
+000001D0:             ;         ;; LDR  R0, pDay
+000001D0:             ;         ;; PUSH {R0}                    ; Stack first parameter
+000001D0:             ;         ;; LDR  R0, pMonth
+000001D0:             ;         ;; PUSH {R1}                    ; Stack second parameter
+000001D0:             ;         ;; LDR  R0, sYear
+000001D0:             ;         ;; PUSH {R0}                    ; Stack third parameter
 000001D0:             ; 
 000001D0:             ; 
-000001D0:             ; 
-000001D0:             ; 
-000001D0:             ; ; def main():
-000001D0:             ; main
-000001D0: E59F40DC    ;         LDR     R4, =&12345678          ; Test value - not part of python compilation
-000001D4: E1A05004    ;         MOV     R5, R4                  ; See later if these registers corrupted
-000001D8: E1A06004    ;         MOV     R6, R4
-000001DC:             ; 
-000001DC:             ; 
-000001DC:             ; ; printAgeHistory(pDay, pMonth, 2000)
-000001DC:             ;         ;; LDR  R0, pDay
-000001DC:             ;         ;; PUSH {R0}                    ; Stack first parameter
-000001DC:             ;         ;; LDR  R0, pMonth
-000001DC:             ;         ;; PUSH {R1}                    ; Stack second parameter
-000001DC:             ;         ;; LDR  R0, sYear
-000001DC:             ;         ;; PUSH {R0}                    ; Stack third parameter
-000001DC:             ; 
-000001DC:             ; ;;; ;;;  Original above, looks buggy? But works.
-000001DC:             ;         
-000001DC: E51F0180    ;         LDR     R0, pDay
-000001E0: E92D0001    ;         PUSH    {R0}                    ; Stack first parameter
-000001E4: E51F0184    ;         LDR     R0, pMonth
-000001E8: E92D0002    ;         PUSH    {R1}                    ; Stack second parameter
-000001EC: E51F0184    ;         LDR     R0, sYear
-000001F0: E92D0001    ;         PUSH    {R0}                    ; Stack third parameter
-000001F4:             ;         
-000001F4:             ;         ;;      LDMFD SP!, {R0-R2}
-000001F4:             ;                 
-000001F4:             ;         
-000001F4:             ; ;for part 1
-000001F4:             ; ;modify the above code (6 lines) to replace the three PUSH instructions with one STMFD instruct
+000001D0:             ; ;;; ;;;  Original above, looks buggy? But works.
+000001D0:             ;         
+000001D0: E51F0174    ;         LDR     R0, pDay
+000001D4: E92D0001    ;         PUSH    {R0}                    ; Stack first parameter
+000001D8: E51F0178    ;         LDR     R0, pMonth
+000001DC: E92D0002    ;         PUSH    {R1}                    ; Stack second parameter
+000001E0: E51F0178    ;         LDR     R0, sYear
+000001E4: E92D0001    ;         PUSH    {R0}                    ; Stack third parameter
+000001E8:             ;         
+000001E8:             ;         ;;      LDMFD SP!, {R0-R2}
+000001E8:             ;                 
+000001E8:             ;         
+000001E8:             ; ;for part 1
+000001E8:             ; ;modify the above code (6 lines) to replace the three PUSH instructions with one STMFD instruct
                       ; ion
-000001F4:             ; ; three parameters should be pushed to the stack with one STMFD instruction.
-000001F4:             ; 
-000001F4:             ; 
-000001F4: EBFFFF9E    ;                 BL      printAgeHistory
+000001E8:             ; ; three parameters should be pushed to the stack with one STMFD instruction.
+000001E8:             ; 
+000001E8:             ; 
+000001E8: EBFFFFA1    ;         BL      printAgeHistory
+000001EC:             ; 
+000001EC:             ; 
+000001EC:             ; 
+000001EC: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
+000001F0: E8BD0001    ;         POP     {R0}
+000001F4: E8BD0001    ;         POP     {R0}
 000001F8:             ; 
-000001F8:             ; 
-000001F8:             ; 
-000001F8: E8BD0001    ;                 POP     {R0}                    ; Deallocate three 32-bit variables
-000001FC: E8BD0001    ;                 POP     {R0}
-00000200: E8BD0001    ;                 POP     {R0}
-00000204:             ; 
-00000204:             ; ;for part 1
-00000204:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
+000001F8:             ; ;for part 1
+000001F8:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
                       ; lve memory access.
-00000204:             ; 
-00000204:             ; 
-00000204:             ; 
-00000204:             ; ; print("Another person");
-00000204: E24F004C    ;                 ADRL    R0, another
-00000208: EF000003    ;                 SVC     print_str
-0000020C:             ; 
-0000020C:             ; ; printAgeHistory(13, 11, 2000)
-0000020C: E3A0000D    ;                 MOV     R0, #13
-00000210: E92D0001    ;                 PUSH    {R0}                    ; Stack first parameter
-00000214: E3A0000B    ;                 MOV     R0, #11
-00000218: E52D0004    ;                 STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
-0000021C: E3A00E7D    ;                 MOV     R0, #2000
-00000220: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
-00000224:             ; 
-00000224:             ; 
-00000224:             ; ;for part 1
-00000224:             ; ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one
+000001F8:             ; 
+000001F8:             ; 
+000001F8:             ; 
+000001F8:             ; ; print("Another person");
+000001F8: E24F004C    ;         ADRL    R0, another
+000001FC: EF000003    ;         SVC     print_str
+00000200:             ; 
+00000200:             ; ; printAgeHistory(13, 11, 2000)
+00000200: E3A0000D    ;         MOV     R0, #13
+00000204: E92D0001    ;         PUSH    {R0}                    ; Stack first parameter
+00000208: E3A0000B    ;         MOV     R0, #11
+0000020C: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
+00000210: E3A00E7D    ;         MOV     R0, #2000
+00000214: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
+00000218:             ; 
+00000218:             ; 
+00000218:             ; ;for part 1
+00000218:             ; ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one
                       ;  STMFD instruction
-00000224:             ; ; three parameters shuld be pushed to the stack with one STMFD instruction.
-00000224:             ; 
-00000224:             ; 
-00000224: EBFFFF92    ;                 BL      printAgeHistory
+00000218:             ; ; three parameters shuld be pushed to the stack with one STMFD instruction.
+00000218:             ; 
+00000218:             ;         
+00000218: EBFFFF95    ;         BL      printAgeHistory
+0000021C:             ; 
+0000021C:             ; 
+0000021C:             ; 
+0000021C: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
+00000220: E8BD0001    ;         POP     {R0}
+00000224: E8BD0001    ;         POP     {R0}
 00000228:             ; 
-00000228:             ; 
-00000228:             ; 
-00000228: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
-0000022C: E8BD0001    ;                 POP     {R0}
-00000230: E8BD0001    ;                 POP     {R0}
-00000234:             ; 
-00000234:             ; ;for part 1
-00000234:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
+00000228:             ; ;for part 1
+00000228:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
                       ; lve memory access.
-00000234:             ; 
-00000234:             ; 
-00000234:             ; 
-00000234:             ;         ; Now check to see if register values intact (Not part of Java)
-00000234: E59F0078    ;         LDR     R0, =&12345678          ; Test value
-00000238: E1540000    ;         CMP     R4, R0                  ; Did you preserve these registers?
-0000023C: 01550000    ;         CMPEQ   R5, R0                  ;
-00000240: 01560000    ;         CMPEQ   R6, R0                  ;
-00000244:             ; 
-00000244: 128F0018    ;         ADRLNE  R0, whoops1             ; Oh dear!
-00000248: 1F000003    ;         SVCNE   print_str               ;
+00000228:             ; 
+00000228:             ; 
+00000228:             ; 
+00000228:             ;         ; Now check to see if register values intact (Not part of Java)
+00000228: E59F0078    ;         LDR     R0, =&12345678          ; Test value
+0000022C: E1540000    ;         CMP     R4, R0                  ; Did you preserve these registers?
+00000230: 01550000    ;         CMPEQ   R5, R0                  ;
+00000234: 01560000    ;         CMPEQ   R6, R0                  ;
+00000238:             ; 
+00000238: 128F0018    ;         ADRLNE  R0, whoops1             ; Oh dear!
+0000023C: 1F000003    ;         SVCNE   print_str               ;
+00000240:             ; 
+00000240: E28F0F6E    ;         ADRL    R0, _stack              ; Have you balanced pushes & pops?
+00000244: E2800B03    ; 
+00000248: E15D0000    ;         CMP     SP, R0                  ;
 0000024C:             ; 
-0000024C: E28F0F6B    ;         ADRL    R0, _stack              ; Have you balanced pushes & pops?
-00000250: E2800B03    ; 
-00000254: E15D0000    ;         CMP     SP, R0                  ;
+0000024C: 128F002A    ;         ADRLNE  R0, whoops2             ; Oh no!!
+00000250: 1F000003    ;         SVCNE   print_str               ; End of test code
+00000254:             ; 
+00000254:             ; ; }// end of main
+00000254: EF000002    ;                 SVC     stop
 00000258:             ; 
-00000258: 128F002A    ;         ADRLNE  R0, whoops2             ; Oh no!!
-0000025C: 1F000003    ;         SVCNE   print_str               ; End of test code
-00000260:             ; 
-00000260:             ; ; }// end of main
-00000260: EF000002    ;                 SVC     stop
-00000264:             ; 
-00000264:             ; 
-00000264: 0A 2A 2A 20 ; whoops1         DEFB    "\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
-00000268: 42 55 54 20 ; 
-0000026C: 59 4F 55 20 ; 
-00000270: 43 4F 52 52 ; 
-00000274: 55 50 54 45 ; 
-00000278: 44 20 52 45 ; 
-0000027C: 47 49 53 54 ; 
-00000280: 45 52 53 21 ; 
-00000284: 20 20 2A 2A ; 
-00000288: 0A 00       ; 
-0000028A: 0A 2A 2A 20 ; whoops2         DEFB    "\n** BUT YOUR STACK DIDN'T BALANCE!  **\n", 0
-0000028E: 42 55 54 20 ; 
-00000292: 59 4F 55 52 ; 
-00000296: 20 53 54 41 ; 
-0000029A: 43 4B 20 44 ; 
-0000029E: 49 44 4E 27 ; 
-000002A2: 54 20 42 41 ; 
-000002A6: 4C 41 4E 43 ; 
-000002AA: 45 21 20 20 ; 
-000002AE: 2A 2A 0A 00 ; 
-000002B2:             ; 
-000002B2: 00 00       ; (padding)
-000002B4: 12345678    ; Remaining literals
+00000258:             ; 
+00000258: 0A 2A 2A 20 ; whoops1         DEFB    "\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
+0000025C: 42 55 54 20 ; 
+00000260: 59 4F 55 20 ; 
+00000264: 43 4F 52 52 ; 
+00000268: 55 50 54 45 ; 
+0000026C: 44 20 52 45 ; 
+00000270: 47 49 53 54 ; 
+00000274: 45 52 53 21 ; 
+00000278: 20 20 2A 2A ; 
+0000027C: 0A 00       ; 
+0000027E: 0A 2A 2A 20 ; whoops2         DEFB    "\n** BUT YOUR STACK DIDN'T BALANCE!  **\n", 0
+00000282: 42 55 54 20 ; 
+00000286: 59 4F 55 52 ; 
+0000028A: 20 53 54 41 ; 
+0000028E: 43 4B 20 44 ; 
+00000292: 49 44 4E 27 ; 
+00000296: 54 20 42 41 ; 
+0000029A: 4C 41 4E 43 ; 
+0000029E: 45 21 20 20 ; 
+000002A2: 2A 2A 0A 00 ; 
+000002A6:             ; 
+000002A6: 00 00       ; (padding)
+000002A8: 12345678    ; Remaining literals
 
 Symbol Table: Labels
 : _stack                            00001000  Value
@@ -392,11 +404,11 @@ Symbol Table: Labels
 : pYear                             0000006C  Local -- ARM
 : sYear                             00000070  Local -- ARM
 : printAgeHistory                   00000074  Local -- ARM
-: loop1                             000000C8  Local -- ARM
-: end1                              00000130  Local -- ARM
-: else1                             00000168  Local -- ARM
-: end2                              000001B8  Local -- ARM
-: another                           000001C0  Local -- ARM
-: main                              000001D0  Local -- ARM
-: whoops1                           00000264  Local -- ARM
-: whoops2                           0000028A  Local -- ARM
+: loop1                             000000C4  Local -- ARM
+: end1                              00000124  Local -- ARM
+: else1                             0000015C  Local -- ARM
+: end2                              000001AC  Local -- ARM
+: another                           000001B4  Local -- ARM
+: main                              000001C4  Local -- ARM
+: whoops1                           00000258  Local -- ARM
+: whoops2                           0000027E  Local -- ARM
