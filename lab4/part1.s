@@ -1,3 +1,21 @@
+
+;;; ;;;  "Don't optimise until you've measured"
+;;; ;;; 	- David Patterson, Computer Organization (RISC-V), 6th edition
+
+
+;;; ;;;  "Don't optimise unless it reduces time spent debugging with Bennett" - me
+
+
+;;; ;;;   LOG OF WORKING CHANGES:
+;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's GUI
+;;; ;;;	      - r_stack
+;;; ;;;       - aware that this is bad practice in real world
+;;; ;;;	      - don't want to screw with Bennett for 100000 hours
+;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
+	
+_stack		equ	0x1000
+	
+	
 ; COMP15111 lab 4 - Template file
 
 print_char	equ	0		; Define names to aid readability
@@ -8,11 +26,17 @@ print_no	equ	4
 cLF		equ	10		; Line-feed character
 
 
-		ADR	SP, _stack	; set SP pointing to the end of our stack
+	MOV SP, #_stack		; set SP to point to hardcoded location of stack
+	;; ADR	SP, _stack	; set SP pointing to the end of our stack
+	
 		B	main
 
-		DEFS	100		; this chunk of memory is for the stack
-_stack					; This label is 'just after' the stack space
+
+;;; ;;;   Exactly what memory address does this actually go to??? 100 bytes/words from end?
+;;; ;;;     Explicit address to set stack to would be better.
+	
+;; 		DEFS	100		; this chunk of memory is for the stack
+;; _stack					; This label is 'just after' the stack space
 
 
 wasborn		DEFB	"This person was born on ",0
@@ -206,12 +230,25 @@ main
 
 
 ; printAgeHistory(pDay, pMonth, 2000)
-		LDR	R0, pDay
-		PUSH	{R0}			; Stack first parameter
-		LDR	R0, pMonth
-		PUSH	{R1}			; Stack second parameter
-		LDR	R0, sYear
-		PUSH	{R0}			; Stack third parameter
+	;; LDR	R0, pDay
+	;; PUSH	{R0}			; Stack first parameter
+	;; LDR	R0, pMonth
+	;; PUSH	{R1}			; Stack second parameter
+	;; LDR	R0, sYear
+	;; PUSH	{R0}			; Stack third parameter
+
+;;; ;;;  Original above, looks buggy? But works.
+	
+	LDR	R0, pDay
+	PUSH	{R0}			; Stack first parameter
+	LDR	R0, pMonth
+	PUSH	{R1}			; Stack second parameter
+	LDR	R0, sYear
+	PUSH	{R0}			; Stack third parameter
+	
+	;;  	LDMFD SP!, {R0-R2}
+		
+	
 ;for part 1
 ;modify the above code (6 lines) to replace the three PUSH instructions with one STMFD instruction
 ; three parameters should be pushed to the stack with one STMFD instruction.
