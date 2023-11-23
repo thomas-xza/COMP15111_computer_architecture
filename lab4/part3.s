@@ -171,6 +171,7 @@ printAgeHistory
 	;; SVC	print_char	; out
 	;; MOV	R0, R2		; r0 = r2 (byear)
 	;; SVC	print_no	; out
+	
 	MOV	R0, #cLF	; r0 = newline char
 	SVC	print_char	; out
 
@@ -208,16 +209,32 @@ loop1	LDR	R0, pYear	; r0 = pYear
 	SVC	print_no	; out
 	ADRL	R0, on		; r0 = `on` addr
 	SVC	print_str	; out
-	MOV	R0, R6		; r0 = r6 (bday)
-	SVC	print_no	; out
-	MOV	R0, #'/'	; r0 = '/' ascii
-	SVC	print_char	; out
-	MOV	R0, R1		; r0 = r1 (bmonth)
-	SVC	print_no	; out
-	MOV	R0, #'/'	; r0 = '/' ascii
-	SVC	print_char	; out
-	MOV	R0, R4		; r0 = r4 (year)
-	SVC	print_no	; out
+	
+	PUSH {LR}		; store LR to stack - overwritten at BL
+
+	PUSH {R6}		; r6 = day
+	PUSH {R1}		; r1 = month
+	PUSH {R4}		; r2 = year	
+
+	BL printTheDate
+
+	POP {R4}		; r2 = year
+	POP {R1}		; r1 = month
+	POP {R6}		; r6 = day
+	
+	POP {LR}		; retrieve LR from stack
+	
+	;; MOV	R0, R6		; r0 = r6 (bday)
+	;; SVC	print_no	; out
+	;; MOV	R0, #'/'	; r0 = '/' ascii
+	;; SVC	print_char	; out
+	;; MOV	R0, R1		; r0 = r1 (bmonth)
+	;; SVC	print_no	; out
+	;; MOV	R0, #'/'	; r0 = '/' ascii
+	;; SVC	print_char	; out
+	;; MOV	R0, R4		; r0 = r4 (year)
+	;; SVC	print_no	; out
+	
 	MOV	R0, #cLF	; r0 = '\n' ascii
 	SVC	print_char	; out
 
@@ -262,16 +279,32 @@ else1
 	SVC	print_no
 	ADRL	R0, on
 	SVC	print_str
-	MOV	R0, R6
-	SVC	print_no
-	MOV	R0, #'/'
-	SVC	print_char
-	MOV	R0, R1
-	SVC	print_no
-	MOV	R0, #'/'
-	SVC	print_char
-	MOV	R0, R4
-	SVC	print_no
+	
+	PUSH {LR}		; store LR to stack - overwritten at BL
+
+	PUSH {R6}		; r6 = day
+	PUSH {R1}		; r1 = month
+	PUSH {R4}		; r2 = year	
+
+	BL printTheDate
+
+	POP {R4}		; r2 = year
+	POP {R1}		; r1 = month
+	POP {R6}		; r6 = day
+	
+	POP {LR}		; retrieve LR from stack
+	
+	;; MOV	R0, R6		; r0 = r6 (bday)
+	;; SVC	print_no	; out
+	;; MOV	R0, #'/'	; r0 = '/' ascii
+	;; SVC	print_char	; out
+	;; MOV	R0, R1		; r0 = r1 (bmonth)
+	;; SVC	print_no	; out
+	;; MOV	R0, #'/'	; r0 = '/' ascii
+	;; SVC	print_char	; out
+	;; MOV	R0, R4		; r0 = r4 (year)
+	;; SVC	print_no	; out
+		
 	MOV	R0, #cLF
 	SVC	print_char
 
