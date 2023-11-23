@@ -263,7 +263,7 @@ KMD
 000001C4:             ; 
 000001C4:             ; ; def main():
 000001C4:             ; main
-000001C4: E59F40D4    ;         LDR     R4, =&12345678          ; Test value - not part of python compilation
+000001C4: E59F40D8    ;         LDR     R4, =&12345678          ; Test value - not part of python compilation
 000001C8: E1A05004    ;         MOV     R5, R4                  ; See later if these registers corrupted
 000001CC: E1A06004    ;         MOV     R6, R4
 000001D0:             ; 
@@ -272,120 +272,127 @@ KMD
 000001D0:             ;         ;; LDR  R0, pDay
 000001D0:             ;         ;; PUSH {R0}                    ; Stack first parameter
 000001D0:             ;         ;; LDR  R0, pMonth
-000001D0:             ;         ;; PUSH {R1}                    ; Stack second parameter
+000001D0:             ;         ;; PUSH {R0}                    ; Stack second parameter
 000001D0:             ;         ;; LDR  R0, sYear
 000001D0:             ;         ;; PUSH {R0}                    ; Stack third parameter
 000001D0:             ; 
 000001D0:             ; 
-000001D0:             ; ;;; ;;;  Original above, looks buggy? But works.
+000001D0:             ; ;;; ;;;  Original above.
 000001D0:             ;         
-000001D0: E51F0174    ;         LDR     R0, pDay
-000001D4: E92D0001    ;         PUSH    {R0}                    ; Stack first parameter
-000001D8: E51F0178    ;         LDR     R0, pMonth
-000001DC: E92D0002    ;         PUSH    {R1}                    ; Stack second parameter
-000001E0: E51F0178    ;         LDR     R0, sYear
-000001E4: E92D0001    ;         PUSH    {R0}                    ; Stack third parameter
-000001E8:             ;         
-000001E8:             ;         ;;      LDMFD SP!, {R0-R2}
-000001E8:             ;                 
-000001E8:             ;         
-000001E8:             ; ;for part 1
-000001E8:             ; ;modify the above code (6 lines) to replace the three PUSH instructions with one STMFD instruct
+000001D0: E51F9174    ;         LDR     R9, pDay
+000001D4: E92D0200    ;         STMFD SP!, {R9}
+000001D8:             ; 
+000001D8:             ;         ;; PUSH {R0}                    ; Stack first parameter
+000001D8: E51F8178    ;         LDR     R8, pMonth
+000001DC: E92D0100    ;         STMFD SP!, {R8}
+000001E0:             ; 
+000001E0:             ;         ;; PUSH {R1}                    ; Stack second parameter
+000001E0: E51F7178    ;         LDR     R7, sYear
+000001E4: E92D0080    ;         STMFD SP!, {R7}
+000001E8:             ; 
+000001E8:             ;         ;; PUSH {R2}                    ; Stack third parameter
+000001E8:             ; 
+000001E8: E92D0380    ;         STMFD SP!, {R7-R9}
+000001EC:             ; 
+000001EC:             ;                 
+000001EC:             ;         
+000001EC:             ; ;for part 1
+000001EC:             ; ;modify the above code (6 lines) to replace the three PUSH instructions with one STMFD instruct
                       ; ion
-000001E8:             ; ; three parameters should be pushed to the stack with one STMFD instruction.
-000001E8:             ; 
-000001E8:             ; 
-000001E8: EBFFFFA1    ;         BL      printAgeHistory
+000001EC:             ; ; three parameters should be pushed to the stack with one STMFD instruction.
 000001EC:             ; 
 000001EC:             ; 
-000001EC:             ; 
-000001EC: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
-000001F0: E8BD0001    ;         POP     {R0}
+000001EC: EBFFFFA0    ;         BL      printAgeHistory
+000001F0:             ; 
+000001F0:             ; 
+000001F0:             ; 
+000001F0: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
 000001F4: E8BD0001    ;         POP     {R0}
-000001F8:             ; 
-000001F8:             ; ;for part 1
-000001F8:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
+000001F8: E8BD0001    ;         POP     {R0}
+000001FC:             ; 
+000001FC:             ; ;for part 1
+000001FC:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
                       ; lve memory access.
-000001F8:             ; 
-000001F8:             ; 
-000001F8:             ; 
-000001F8:             ; ; print("Another person");
-000001F8: E24F004C    ;         ADRL    R0, another
-000001FC: EF000003    ;         SVC     print_str
-00000200:             ; 
-00000200:             ; ; printAgeHistory(13, 11, 2000)
-00000200: E3A0000D    ;         MOV     R0, #13
-00000204: E92D0001    ;         PUSH    {R0}                    ; Stack first parameter
-00000208: E3A0000B    ;         MOV     R0, #11
-0000020C: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
-00000210: E3A00E7D    ;         MOV     R0, #2000
-00000214: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
-00000218:             ; 
-00000218:             ; 
-00000218:             ; ;for part 1
-00000218:             ; ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one
+000001FC:             ; 
+000001FC:             ; 
+000001FC:             ; 
+000001FC:             ; ; print("Another person");
+000001FC: E24F0050    ;         ADRL    R0, another
+00000200: EF000003    ;         SVC     print_str
+00000204:             ; 
+00000204:             ; ; printAgeHistory(13, 11, 2000)
+00000204: E3A0000D    ;         MOV     R0, #13
+00000208: E92D0001    ;         PUSH    {R0}                    ; Stack first parameter
+0000020C: E3A0000B    ;         MOV     R0, #11
+00000210: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
+00000214: E3A00E7D    ;         MOV     R0, #2000
+00000218: E52D0004    ;         STR     R0, [SP, #-4]!          ; An explicit coding of PUSH
+0000021C:             ; 
+0000021C:             ; 
+0000021C:             ; ;for part 1
+0000021C:             ; ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one
                       ;  STMFD instruction
-00000218:             ; ; three parameters shuld be pushed to the stack with one STMFD instruction.
-00000218:             ; 
-00000218:             ;         
-00000218: EBFFFF95    ;         BL      printAgeHistory
+0000021C:             ; ; three parameters shuld be pushed to the stack with one STMFD instruction.
 0000021C:             ; 
-0000021C:             ; 
-0000021C:             ; 
-0000021C: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
-00000220: E8BD0001    ;         POP     {R0}
+0000021C:             ;         
+0000021C: EBFFFF94    ;         BL      printAgeHistory
+00000220:             ; 
+00000220:             ; 
+00000220:             ; 
+00000220: E8BD0001    ;         POP     {R0}                    ; Deallocate three 32-bit variables
 00000224: E8BD0001    ;         POP     {R0}
-00000228:             ; 
-00000228:             ; ;for part 1
-00000228:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
+00000228: E8BD0001    ;         POP     {R0}
+0000022C:             ; 
+0000022C:             ; ;for part 1
+0000022C:             ; ;Replace the three POP instructions mentioned above with a single instruction that doesn't invo
                       ; lve memory access.
-00000228:             ; 
-00000228:             ; 
-00000228:             ; 
-00000228:             ;         ; Now check to see if register values intact (Not part of Java)
-00000228: E59F0070    ;         LDR     R0, =&12345678          ; Test value
-0000022C: E1540000    ;         CMP     R4, R0                  ; Did you preserve these registers?
-00000230: 01550000    ;         CMPEQ   R5, R0                  ;
-00000234: 01560000    ;         CMPEQ   R6, R0                  ;
-00000238:             ; 
-00000238: 128F0010    ;         ADRLNE  R0, whoops1             ; Oh dear!
-0000023C: 1F000003    ;         SVCNE   print_str               ;
-00000240:             ; 
-00000240:             ;         ;; ADRL R0, _stack              ; Have you balanced pushes & pops?
-00000240:             ;         ;; CMP  SP, R0                  ;
-00000240:             ; 
-00000240: E35D0A01    ;         CMP     SP, #_stack             ;
+0000022C:             ; 
+0000022C:             ; 
+0000022C:             ; 
+0000022C:             ;         ; Now check to see if register values intact (Not part of Java)
+0000022C: E59F0070    ;         LDR     R0, =&12345678          ; Test value
+00000230: E1540000    ;         CMP     R4, R0                  ; Did you preserve these registers?
+00000234: 01550000    ;         CMPEQ   R5, R0                  ;
+00000238: 01560000    ;         CMPEQ   R6, R0                  ;
+0000023C:             ; 
+0000023C: 128F0010    ;         ADRLNE  R0, whoops1             ; Oh dear!
+00000240: 1F000003    ;         SVCNE   print_str               ;
 00000244:             ; 
-00000244: 128F002A    ;         ADRLNE  R0, whoops2             ; Oh no!!
-00000248: 1F000003    ;         SVCNE   print_str               ; End of test code
-0000024C:             ; 
-0000024C:             ; ; }// end of main
-0000024C: EF000002    ;                 SVC     stop
+00000244:             ;         ;; ADRL R0, _stack              ; Have you balanced pushes & pops?
+00000244:             ;         ;; CMP  SP, R0                  ;
+00000244:             ; 
+00000244: E35D0A01    ;         CMP     SP, #_stack             ;
+00000248:             ; 
+00000248: 128F002A    ;         ADRLNE  R0, whoops2             ; Oh no!!
+0000024C: 1F000003    ;         SVCNE   print_str               ; End of test code
 00000250:             ; 
-00000250:             ; 
-00000250: 0A 2A 2A 20 ; whoops1         DEFB    "\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
-00000254: 42 55 54 20 ; 
-00000258: 59 4F 55 20 ; 
-0000025C: 43 4F 52 52 ; 
-00000260: 55 50 54 45 ; 
-00000264: 44 20 52 45 ; 
-00000268: 47 49 53 54 ; 
-0000026C: 45 52 53 21 ; 
-00000270: 20 20 2A 2A ; 
-00000274: 0A 00       ; 
-00000276: 0A 2A 2A 20 ; whoops2         DEFB    "\n** BUT YOUR STACK DIDN'T BALANCE!  **\n", 0
-0000027A: 42 55 54 20 ; 
-0000027E: 59 4F 55 52 ; 
-00000282: 20 53 54 41 ; 
-00000286: 43 4B 20 44 ; 
-0000028A: 49 44 4E 27 ; 
-0000028E: 54 20 42 41 ; 
-00000292: 4C 41 4E 43 ; 
-00000296: 45 21 20 20 ; 
-0000029A: 2A 2A 0A 00 ; 
-0000029E:             ; 
-0000029E: 00 00       ; (padding)
-000002A0: 12345678    ; Remaining literals
+00000250:             ; ; }// end of main
+00000250: EF000002    ;                 SVC     stop
+00000254:             ; 
+00000254:             ; 
+00000254: 0A 2A 2A 20 ; whoops1         DEFB    "\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
+00000258: 42 55 54 20 ; 
+0000025C: 59 4F 55 20 ; 
+00000260: 43 4F 52 52 ; 
+00000264: 55 50 54 45 ; 
+00000268: 44 20 52 45 ; 
+0000026C: 47 49 53 54 ; 
+00000270: 45 52 53 21 ; 
+00000274: 20 20 2A 2A ; 
+00000278: 0A 00       ; 
+0000027A: 0A 2A 2A 20 ; whoops2         DEFB    "\n** BUT YOUR STACK DIDN'T BALANCE!  **\n", 0
+0000027E: 42 55 54 20 ; 
+00000282: 59 4F 55 52 ; 
+00000286: 20 53 54 41 ; 
+0000028A: 43 4B 20 44 ; 
+0000028E: 49 44 4E 27 ; 
+00000292: 54 20 42 41 ; 
+00000296: 4C 41 4E 43 ; 
+0000029A: 45 21 20 20 ; 
+0000029E: 2A 2A 0A 00 ; 
+000002A2:             ; 
+000002A2: 00 00       ; (padding)
+000002A4: 12345678    ; Remaining literals
 
 Symbol Table: Labels
 : _stack                            00001000  Value
@@ -411,5 +418,5 @@ Symbol Table: Labels
 : end2                              000001AC  Local -- ARM
 : another                           000001B4  Local -- ARM
 : main                              000001C4  Local -- ARM
-: whoops1                           00000250  Local -- ARM
-: whoops2                           00000276  Local -- ARM
+: whoops1                           00000254  Local -- ARM
+: whoops2                           0000027A  Local -- ARM

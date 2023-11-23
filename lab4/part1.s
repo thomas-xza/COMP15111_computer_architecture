@@ -241,21 +241,28 @@ main
 	;; LDR	R0, pDay
 	;; PUSH	{R0}			; Stack first parameter
 	;; LDR	R0, pMonth
-	;; PUSH	{R1}			; Stack second parameter
+	;; PUSH	{R0}			; Stack second parameter
 	;; LDR	R0, sYear
 	;; PUSH	{R0}			; Stack third parameter
 
 
-;;; ;;;  Original above, looks buggy? But works.
+;;; ;;;  Original above.
 	
-	LDR	R0, pDay
-	PUSH	{R0}			; Stack first parameter
-	LDR	R0, pMonth
-	PUSH	{R1}			; Stack second parameter
-	LDR	R0, sYear
-	PUSH	{R0}			; Stack third parameter
-	
-	;;  	LDMFD SP!, {R0-R2}
+	LDR	R9, pDay
+ 	STMFD SP!, {R9}
+
+	;; PUSH	{R0}			; Stack first parameter
+	LDR	R8, pMonth
+ 	STMFD SP!, {R8}
+
+	;; PUSH	{R1}			; Stack second parameter
+	LDR	R7, sYear
+ 	STMFD SP!, {R7}
+
+	;; PUSH	{R2}			; Stack third parameter
+
+ 	STMFD SP!, {R7-R9}
+
 		
 	
 ;for part 1
