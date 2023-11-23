@@ -71,6 +71,13 @@ printAgeHistory
 	;; PUSH	{R5}
 	;; PUSH	{R4}
 
+;;;   Don't know what the exercise means "there are some other registers which
+;;;   this method is using" because I don't agree!
+;;;   Anyway just saving them all instead.
+	
+	STMFD SP!, {R0-R3}
+	STMFD SP!, {R7-R14}
+	
 	STMFD SP!, {R4-R6}
 
 ;for part 1
@@ -82,6 +89,9 @@ printAgeHistory
 	LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
 	LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 
+;;;   part 2, cut above lines in favour of loading at start
+	
+	
 ;   year = bYear + 1
 	ADD	R4, R2, #1	; r4 = r2 + 1
 ;   age = 1;
@@ -275,7 +285,7 @@ main
 	BL	printAgeHistory
 
 
-	ADD SP, SP, #12
+	ADD SP, SP, #4*14
 	
 
 	;; POP	{R0}			; Deallocate three 32-bit variables

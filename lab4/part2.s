@@ -47,7 +47,7 @@ willbe		DEFB	"This person will be ",0
 
 pDay		DEFW	23		;  pDay = 23    //or whatever is today's date
 pMonth		DEFW	11		;  pMonth = 11  //or whatever is this month
-pYear		DEFW	2005	;  pYear = 2005 //or whatever is this year
+pYear		DEFW	2023		;  pYear = 2005 //or whatever is this year
 
 
 
@@ -71,6 +71,13 @@ printAgeHistory
 	;; PUSH	{R5}
 	;; PUSH	{R4}
 
+;;;   Don't know what the exercise means "there are some other registers which
+;;;   this method is using" because I don't agree!
+;;;   Anyway just saving them all instead.
+	
+	STMFD SP!, {R0-R3}
+	STMFD SP!, {R7-R14}
+	
 	STMFD SP!, {R4-R6}
 
 ;for part 1
@@ -82,6 +89,9 @@ printAgeHistory
 	LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
 	LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 
+;;;   part 2, cut above lines in favour of loading at start
+	
+	
 ;   year = bYear + 1
 	ADD	R4, R2, #1	; r4 = r2 + 1
 ;   age = 1;
@@ -135,11 +145,11 @@ loop1	LDR	R0, pYear	; r0 = pYear
 
 
 ;  print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
-	ADRL	R0, was		; r0 = `was` address
+	ADRL	R0, was		; r0 = `was` addr
 	SVC	print_str	; out
 	MOV	R0, R5		; r0 = r5 (age)
 	SVC	print_no	; out
-	ADRL	R0, on		; r0 = `on` address
+	ADRL	R0, on		; r0 = `on` addr
 	SVC	print_str	; out
 	MOV	R0, R6		; r0 = r6 (bday)
 	SVC	print_no	; out
@@ -171,7 +181,7 @@ end1
 ; for part 4, should be changed to:
 ; if (bMonth == pMonth and bDay == pDay):
 
-	LDR	R0, pMonth	; r0 = `pMonth` address
+	LDR	R0, pMonth	; r0 = `pMonth` addr
 	CMP	R1, R0		; r1 == r0?
 	BNE	else1
 
@@ -275,7 +285,7 @@ main
 	BL	printAgeHistory
 
 
-	ADD SP, SP, #12
+	ADD SP, SP, #4*14
 	
 
 	;; POP	{R0}			; Deallocate three 32-bit variables
@@ -292,13 +302,19 @@ main
 	SVC	print_str
 
 ; printAgeHistory(13, 11, 2000)
-	MOV	R0, #13
-	PUSH	{R0}			; Stack first parameter
-	MOV	R0, #11
-	STR	R0, [SP, #-4]!		; An explicit coding of PUSH
-	MOV	R0, #2000
-        STR	R0, [SP, #-4]!		; An explicit coding of PUSH
+	MOV	R9, #13
+	
+	;; PUSH	{R0}			; Stack first parameter
+	
+	MOV	R8, #11
+	
+	;; STR	R0, [SP, #-4]!		; An explicit coding of PUSH
+	
+	MOV	R7, #2000
+	
+        ;; STR	R0, [SP, #-4]!		; An explicit coding of PUSH
 
+ 	STMFD	SP!, {R7-R9}
 
 ;for part 1
 ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one STMFD instruction
@@ -307,7 +323,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD SP, SP, #12
+	ADD	SP, SP, #12
 	
 
 
@@ -334,7 +350,8 @@ main
 	;; ADRL	R0, _stack		; Have you balanced pushes & pops?
 	;; CMP	SP, R0			;
 
-	CMP	SP, #_stack		;
+	CMP	SP, #_stack		; Have you balanced pushes & pops?
+					; [hardcoded version]
 
 
 	
@@ -342,7 +359,7 @@ main
 	SVCNE	print_str		; End of test code
 
 ; }// end of main
-		SVC	stop
+	SVC	stop
 
 
 whoops1		DEFB	"\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
