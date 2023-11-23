@@ -135,11 +135,11 @@ loop1	LDR	R0, pYear	; r0 = pYear
 
 
 ;  print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
-	ADRL	R0, was		; r0 = `was` address
+	ADRL	R0, was		; r0 = `was` addr
 	SVC	print_str	; out
 	MOV	R0, R5		; r0 = r5 (age)
 	SVC	print_no	; out
-	ADRL	R0, on		; r0 = `on` address
+	ADRL	R0, on		; r0 = `on` addr
 	SVC	print_str	; out
 	MOV	R0, R6		; r0 = r6 (bday)
 	SVC	print_no	; out
@@ -171,7 +171,7 @@ end1
 ; for part 4, should be changed to:
 ; if (bMonth == pMonth and bDay == pDay):
 
-	LDR	R0, pMonth	; r0 = `pMonth` address
+	LDR	R0, pMonth	; r0 = `pMonth` addr
 	CMP	R1, R0		; r1 == r0?
 	BNE	else1
 
@@ -304,7 +304,7 @@ main
 	
         ;; STR	R0, [SP, #-4]!		; An explicit coding of PUSH
 
- 	STMFD SP!, {R7-R9}
+ 	STMFD	SP!, {R7-R9}
 
 ;for part 1
 ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one STMFD instruction
@@ -313,7 +313,7 @@ main
 	
 	BL	printAgeHistory
 
-	ADD SP, SP, #12
+	ADD	SP, SP, #12
 	
 
 
@@ -340,7 +340,8 @@ main
 	;; ADRL	R0, _stack		; Have you balanced pushes & pops?
 	;; CMP	SP, R0			;
 
-	CMP	SP, #_stack		;
+	CMP	SP, #_stack		; Have you balanced pushes & pops?
+					; [hardcoded version]
 
 
 	
@@ -348,7 +349,7 @@ main
 	SVCNE	print_str		; End of test code
 
 ; }// end of main
-		SVC	stop
+	SVC	stop
 
 
 whoops1		DEFB	"\n** BUT YOU CORRUPTED REGISTERS!  **\n", 0
