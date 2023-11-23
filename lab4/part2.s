@@ -47,7 +47,7 @@ willbe		DEFB	"This person will be ",0
 
 pDay		DEFW	23		;  pDay = 23    //or whatever is today's date
 pMonth		DEFW	11		;  pMonth = 11  //or whatever is this month
-pYear		DEFW	2023		;  pYear = 2005 //or whatever is this year
+pYear		DEFW	2005	;  pYear = 2005 //or whatever is this year
 
 
 
@@ -292,19 +292,13 @@ main
 	SVC	print_str
 
 ; printAgeHistory(13, 11, 2000)
-	MOV	R9, #13
-	
-	;; PUSH	{R0}			; Stack first parameter
-	
-	MOV	R8, #11
-	
-	;; STR	R0, [SP, #-4]!		; An explicit coding of PUSH
-	
-	MOV	R7, #2000
-	
-        ;; STR	R0, [SP, #-4]!		; An explicit coding of PUSH
+	MOV	R0, #13
+	PUSH	{R0}			; Stack first parameter
+	MOV	R0, #11
+	STR	R0, [SP, #-4]!		; An explicit coding of PUSH
+	MOV	R0, #2000
+        STR	R0, [SP, #-4]!		; An explicit coding of PUSH
 
- 	STMFD SP!, {R7-R9}
 
 ;for part 1
 ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one STMFD instruction
