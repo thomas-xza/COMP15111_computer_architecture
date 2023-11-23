@@ -45,9 +45,11 @@ sYear		DEFW	2000
 
 printAgeHistory
 
-	PUSH	{R6}			; callee saves three registers
-	PUSH	{R5}
-	PUSH	{R4}
+	;; PUSH	{R6}			; callee saves three registers
+	;; PUSH	{R5}
+	;; PUSH	{R4}
+
+	STMFD SP!, {R4-R6}
 
 ;for part 1
 ;replace the PUSH instructions given above with one STMFD instruction
