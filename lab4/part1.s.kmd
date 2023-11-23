@@ -108,15 +108,25 @@ KMD
 000000F8:             ;         
 000000F8: E92D0070    ;         STMFD SP!, {R4-R6}
 000000FC:             ; 
+000000FC:             ;         ;; STMFD SP!, {R0-R12}
+000000FC:             ;         
 000000FC:             ; ;for part 1
 000000FC:             ; ;replace the PUSH instructions given above with one STMFD instruction
-000000FC:             ; 
 000000FC:             ; 
 000000FC:             ; 
 000000FC: E59D6014    ;         LDR     R6, [SP, #(3 + 2) * 4]  ; load 3rd item on stack to r6
 00000100: E59D1010    ;         LDR     R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
 00000104: E59D200C    ;         LDR     R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 00000108:             ; 
+00000108:             ;         
+00000108:             ; ;;;   The following gives a 'corrupted registers warning', but works
+00000108:             ; ;;;     with 1 STMFD instruction which saves all registers.
+00000108:             ;         
+00000108:             ;         ;; LDR  R6, [SP, #(13 + 2) * 4] ; load 3rd item on stack to r6
+00000108:             ;         ;; LDR  R1, [SP, #(13 + 1) * 4]  ; load 2nd item on stock to r1
+00000108:             ;         ;; LDR  R2, [SP, #(13 + 0) * 4]  ; load 1st item on stack to r2
+00000108:             ; 
+00000108:             ;         
 00000108:             ; ;;;   part 2, cut above lines in favour of loading at start
 00000108:             ;         
 00000108:             ;         

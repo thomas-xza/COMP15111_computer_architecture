@@ -80,15 +80,25 @@ m	;; PUSH	{R4}
 	
 	STMFD SP!, {R4-R6}
 
+	;; STMFD SP!, {R0-R12}
+	
 ;for part 1
 ;replace the PUSH instructions given above with one STMFD instruction
-
 
 
 	LDR	R6, [SP, #(3 + 2) * 4]	; load 3rd item on stack to r6
 	LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
 	LDR	R2, [SP, #(3 + 0) * 4]  ; load 1st item on stack to r2
 
+	
+;;;   The following gives a 'corrupted registers warning', but works
+;;; 	with 1 STMFD instruction which saves all registers.
+	
+	;; LDR	R6, [SP, #(13 + 2) * 4]	; load 3rd item on stack to r6
+	;; LDR	R1, [SP, #(13 + 1) * 4]  ; load 2nd item on stock to r1
+	;; LDR	R2, [SP, #(13 + 0) * 4]  ; load 1st item on stack to r2
+
+	
 ;;;   part 2, cut above lines in favour of loading at start
 	
 	

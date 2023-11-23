@@ -61,22 +61,23 @@ sYear		DEFW	2000
 printTheDate
 	
 ;;; parameters
-;;; 	[SP, 0] = day
-;;; 	[SP, 4] = month
-;;; 	[SP, 8] = year
+;;;   [SP, 0] = day
+;;;   [SP, 4] = month
+;;;   [SP, 8] = year
 	
 ;;; local variables
-;;; 	r0 = day
-;;;	r1 = month
-;;; 	r2 = year
+;;;   r0 = day
+;;;   r1 = month
+;;;   r2 = year
+	
 	
 	STMFD	SP!, {R0-R12}	;  store all general-purpose registers to stack
 
 ;;;   Load the 3 items pushed by previous method.
 	
-	LDR	R0, [SP, #(13 + 2) * 4]		;  load 14th item on stack to r0
+	LDR	R0, [SP, #(13 + 2) * 4]		;  load 16th item on stack to r0
 	LDR	R1, [SP, #(13 + 1) * 4]		;  load 15th item on stack to r1
-	LDR	R2, [SP, #(13 + 0) * 4]		;  load 16th item on stack to r2
+	LDR	R2, [SP, #(13 + 0) * 4]		;  load 14th item on stack to r2
 
 ;;;   Output date as string.
 	
@@ -100,18 +101,23 @@ printTheDate
 
 	
 ; def printAgeHistory (bDay, bMonth, bYear)
-
-; parameters
-;  R0 = bDay (on entry, moved to R6 to allow SVC to output via R0)
-;  R1 = bMonth
-;  R2 = bYear
-; local variables (callee-saved registers)
-;  R4 = year
-;  R5 = age
-;  R6 = bDay - originally R0	
 	
 	
 printAgeHistory
+
+;;; parameters
+;;;   R0 = bDay (on entry, moved to R6 to allow SVC to output via R0)
+;;;   R1 = bMonth
+;;;   R2 = bYear
+	
+;;; local variables (callee-saved registers)
+;;;   R4 = year
+;;;   R5 = age
+;;;   R6 = bDay - originally R0	
+;;;   R7 = comparison store
+;;;   R8 = comparison store #2
+;;;   R9 = comparison store #3
+;;;   R10 = comparison store #4
 
 	;; PUSH	{R6}			; callee saves three registers
 	;; PUSH	{R5}
@@ -127,9 +133,7 @@ printAgeHistory
 	STMFD SP!, {R4-R6}
 
 ;for part 1
-;replace the PUSH instructions given above with one STMFD instruction
-
-	
+;replace the PUSH instructions given above with one STMFD instruction	
    
 	LDR	R6, [SP, #(3 + 2) * 4]  ; load 3rd item on stack to r6
 	LDR	R1, [SP, #(3 + 1) * 4]  ; load 2nd item on stock to r1
@@ -181,20 +185,53 @@ printAgeHistory
 ;;; ;;;  http://www-mdp.eng.cam.ac.uk/web/library/enginfo/mdp_micro/lecture3/lecture3-3-3.html
 	
 ; this code does: while year < pYear //{
-loop1	LDR	R0, pYear	; r0 = pYear
-	CMP	R4, R0		; r4 == r0 ?
-	BHS	end1		; branch to end1 if r4 > r0
 
+loop1
+	;; LDR     R0, pYear
+	;; CMP     R4, R0
+        ;; BHS     end1  ; Years are unsigned
+	
 ; for part 4, should be changed to:
 ; while year < pYear or
-;				(year == pYear and bMonth < pMonth) or
-;				(year == pYear and bMonth == pMonth and bDay < pDay):
+; (year == pYear and bMonth < pMonth) or
+; (year == pYear and bMonth == pMonth and bDay < pDay):	
+
+	
+;;; Really, lower-case is more legible, I have some regrets.
+	
+
+;;;  year < pyear
+	
+	LDR	r0, pYear	; r0 = pYear
+	
+	CMP 	r4, r0		; compare r4 (iterating year) with r0 (year from memory)
+	BHS	end1		; branch to end1 if r4 > r0
+
+	CMP 	r4, r0		; compare r4 (iterating year) with r0 (year from memory)
+	MOVEQ	r7, #1		; if equal, store 1 in r7 (for later)
+	
+	
+;;;  (year == pYear and bMonth < pMonth)
+
+	LDR 	r0, pMonth	; r0 = pMonth
+	CMP	r1, r0		; compare r1 (iter month) with r0 (month from mem)
+	
+	MOVLT	r8, #1		; if r1 less than r0, store 1 in r8: bMonth < pMonth
+	MOVEQ	r9, #1		; if r1 equals r0, store 1 in r9: bMonth == pMonth
+
+	
+	AND	r0, r8, r7	; and the bits within r8 and r7
+	CMP     r0, #1		; compare r0 with 1
+	BEQ	end1		; branch if equal
 
 
+; (year == pYear and bMonth == pMonth and bDay < pDay):
+	
+	LDR 	r0, pDay	; r0 = pMonth
+	CMP	r1, r0		; compare r1 (iter month) with r0 (month from mem)
+	MOVLT	r8, #1		; if r1 less than r0, store 1 in r8
 
-
-
-
+	
 
 
 
