@@ -179,9 +179,11 @@ else1
 
 ; }// end of printAgeHistory
 end2
-        POP	{R4}		; callee saved registers
-		POP	{R5}
-		POP	{R6}
+        ;; POP	{R4}		; callee saved registers
+	;; POP	{R5}
+	;; POP	{R6}
+
+	LDMFD SP!, {R4-R6}
 
 ;for part 1
 ;replace the POP instructions given above with one LDMFD instruction
