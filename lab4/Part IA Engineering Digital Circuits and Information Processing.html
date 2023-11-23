@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/lecture3.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Part IA Engineering: Digital Circuits and Information Processing</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+<!-- InstanceEndEditable -->
+<link rel="stylesheet" type="text/css" media="screen" href="../arm.css" />
+<link rel="stylesheet" type="text/css" media="print" href="../arm_print.css" />
+</head>
+
+<body>
+
+<div class="skipto">Skip to: [<a href="#skiptocontent">content</a> <a href="#skiptoleftmenu">leftmenu</a>] </div>
+<div id="container">
+
+<div id="header">
+<div id="banner"><img src="../images/banner3.jpg" border="0" usemap="#Map" />
+  <map name="Map" id="Map">
+    <area shape="rect" coords="5,6,207,73" href="http://www.eng.cam.ac.uk" alt="University of Cambridge Department of Engineering" title="University of Cambridge Department of Engineering" />
+    <area shape="rect" coords="211,8,320,61" href="http://www.arm.com" alt="ARM logo" title="ARM logo" />
+    <area shape="rect" coords="325,4,434,73" href="#" alt="Entrance to ARM offices, Cambridge" title="Entrance to ARM offices, Cambridge" />
+    <area shape="rect" coords="434,3,604,72" href="#" alt="King's College, Cambridge" title="King's College, Cambridge" />
+    <area shape="rect" coords="605,4,716,74" href="#" alt="Entrance to Department of Engineering main building" title="Entrance to Department of Engineering main building" />
+    <area shape="rect" coords="716,3,800,74" href="#" alt="ARM processor" title="ARM processor" />
+  </map>
+</div>
+<h1>PART IA: DIGITAL CIRCUITS AND INFORMATION PROCESSING</h1>
+</div>
+
+
+<div id="topnav"> 
+<div id="breadcrumbs"><div id="topmenu">
+<ul>
+<li> <a href="../index.html">HOME</a> </li>
+<li> <a href="#">FORUM</a> </li>
+<li> <a href="#">SEARCH</a> </li>
+<li> <a href="#">CONTACT</a> </li>
+</ul>
+</div><!-- InstanceBeginEditable name="breadcrumbs" -->
+<a href="lecture3-1.html">Lecture 3:</a> > <a href="lecture3-1.html">Assembly Language Operations</a> > <a href="lecture3-3-1.html">Branches and Conditional Execution</a> > <a href="lecture3-3-3.html">Conditional Branch Instructions</a><!-- InstanceEndEditable -->
+</div>
+
+
+</div>
+
+<div id="main">
+
+
+
+<div id="leftcol">
+<a class="skipanchor" name="skiptoleftmenu" id="skiptoleftmenu">&nbsp;</a>
+<div id="leftmenu">
+<ul class="level1">
+ 	<li class="lecturenumber"><a class="lecturenumber" href="../index.html">HOME</a></li>
+ 	<li class="lecturetitle"><a href="lecture3-1.html">3. Assembly Language Operations</a></li>
+		
+			<li class="submenu"><a href="lecture3-1.html">The Current Program Status Register</a>
+			<li class="submenu"><a href="lecture3-2.html">Comparison Operations</a></li>
+   			<li class="submenu"><a href="#">Branches and Conditional Execution</a>
+   				<ul class="level2">
+   					<li><a href="lecture3-3-1.html">Basic Branching</a></li>
+   					<li><a href="lecture3-3-2.html">Conditional Branches</a></li>
+					<li><a href="lecture3-3-3.html">Conditional Branch Instructions</a></li>
+					<li><a href="lecture3-3-4.html">Conditional Execution</a></li>
+				</ul>
+  			</li>
+			
+			
+		
+  		</ul>
+
+  
+</div>
+</div>
+
+
+
+
+
+<div id="content"><!-- InstanceBeginEditable name="content" -->
+<h1>Assembly Language Operations</h1>
+<div id="textcontent">
+<h2><span>Conditional Branch Instructions</span></h2>
+
+<p>There are 16 possible conditional branches in the ARM assembly language, including "always" (which is effectively an unconditional branch) and "never" (which is never used but exists for future possible extensions to the architecture). The complete set of branch instructions is given in the table:</p>
+
+<table width="90%" border="0">
+  <tr>
+    <td><strong>Branch</strong></td>
+    <td><strong>Condition Test</strong></td>
+    <td><strong>Meaning</strong></td>
+    <td><strong>Uses</strong></td>
+  </tr>
+  <tr>
+    <td>B</td>
+    <td>No test</td>
+    <td>Unconditional</td>
+    <td>Always take the branch</td>
+  </tr>
+  <tr>
+    <td>BAL</td>
+    <td>No test</td>
+    <td>Always</td>
+    <td>Always take the branch</td>
+  </tr>
+  <tr>
+    <td>BEQ</td>
+    <td>Z=1</td>
+    <td>Equal</td>
+    <td>Comparison equal or zero result</td>
+  </tr>
+  <tr>
+    <td>BNE</td>
+    <td>Z=0</td>
+    <td>Not equal</td>
+    <td>Comparison not equal or non-zero result</td>
+  </tr>
+  <tr>
+    <td>BCS</td>
+    <td>C=1</td>
+    <td>Carry set</td>
+    <td>Arithmetic operation gave carry out</td>
+  </tr>
+  <tr>
+    <td>BCC</td>
+    <td>C=1</td>
+    <td>Carry clear</td>
+    <td>Arithmetic operation did not produce a carry</td>
+  </tr>
+  <tr>
+    <td>BHS</td>
+    <td>C=1</td>
+    <td>Higher or same</td>
+    <td>Unsigned comparison gave higher or same result</td>
+  </tr>
+  <tr>
+    <td>BLO</td>
+    <td>C=0</td>
+    <td>Lower</td>
+    <td>Unsigned comparison gave lower result</td>
+  </tr>
+  <tr>
+    <td>BMI</td>
+    <td>N=1</td>
+    <td>Minus</td>
+    <td>Result is minus or negative</td>
+  </tr>
+  <tr>
+    <td>BPL</td>
+    <td>N=0</td>
+    <td>Plus</td>
+    <td>Result is positive (plus) or zero</td>
+  </tr>
+  <tr>
+    <td>BVS</td>
+    <td>V=1</td>
+    <td>Overflow Set</td>
+    <td>Signed integer operation: overflow occurred</td>
+  </tr>
+  <tr>
+    <td>BVC</td>
+    <td>V=0</td>
+    <td>Overflow Clear</td>
+    <td>Signed integer operation: no overflow occurred</td>
+  </tr>
+  <tr>
+    <td>BHI</td>
+    <td>((NOT C) OR Z) =0<br />
+	{C set and Z clear}
+	</td>
+    <td>Higher</td>
+    <td>Unsigned comparison gave higher</td>
+  </tr>
+  <tr>
+    <td>BLS</td>
+    <td>((NOT C) OR Z) =1<br />
+	{C set or Z clear}</td>
+    <td>Lower or same</td>
+    <td>Unsigned comparison gave lower or same</td>
+  </tr>
+  <tr>
+    <td>BGE</td>
+    <td>(N EOR V) =0<br />
+	{(N and V) set or (N and V) clear}</td>
+    <td>Greater or Equal</td>
+    <td>Signed integer comparison gave greater than or equal</td>
+  </tr>
+  <tr>
+    <td>BLT</td>
+    <td>(N EOR V) =1<br />
+	{(N set and V clear) or (N clear and V set)}</td>
+    <td>Less Than</td>
+    <td>Signed integer comparison gave less than</td>
+  </tr>
+  <tr>
+    <td>BGT</td>
+    <td>(Z OR (N EOR V)) =0<br />
+	{((N and V) set or clear) and Z clear}</td>
+    <td>Greater Than</td>
+    <td>Signed integer comparison gave greater than</td>
+  </tr>
+  <tr>
+    <td>BLE</td>
+    <td>(Z OR (N EOR V)) =1<br />
+	{(N set and V clear) or (N clear and V set) or Z set}</td>
+    <td>Less or Equal </td>
+    <td>Signed integer comparison gave less than or equal</td>
+  </tr>
+</table>
+
+<p>The BCC instruction is equivalent to BLO; likewise the BCS instruction is equivalent to BHS.</p>
+
+</div>
+<!-- InstanceEndEditable --></div>
+
+
+
+
+
+</div>
+
+</div>
+
+<div id="footer">
+<p>Copyright © 2006 University of Cambridge, website design copyright © 2006 <a href="http://www.mitchellwebdesign.com">Mitchell Web Design</a></p>
+</div>
+
+</body>
+<!-- InstanceEnd --></html>
