@@ -10,25 +10,22 @@ KMD
 00000000:             ; ;;; ;;;   LOG OF WORKING CHANGES:
 00000000:             ; ;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's G
                       ; UI
-00000000:             ; ;;; ;;;       - r_stack
-00000000:             ; ;;; ;;;       - aware that this is bad practice in real world
-00000000:             ; ;;; ;;;       - don't want to screw with Bennett for 100000 hours
 00000000:             ; ;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
 00000000:             ;         
 00000000:             ; _stack          equ     0x1000
 00000000:             ;         
-00000000:             ;         
-00000000:             ; ; COMP15111 lab 4 - Template file
-00000000:             ; 
-00000000:             ; print_char      equ     0               ; Define names to aid readability
-00000000:             ; stop            equ     2
-00000000:             ; print_str       equ     3
-00000000:             ; print_no        equ     4
-00000000:             ; 
-00000000:             ; cLF             equ     10              ; Line-feed character
-00000000:             ; 
-00000000:             ; 
-00000000: E3A0DA01    ;         MOV SP, #_stack         ; set SP to point to hardcoded location of stack
+00000000: E3A0DA01    ;         MOV     SP, #_stack             ; set SP to point to hardcoded location of _stack
+00000004:             ;         
+00000004:             ; ; COMP15111 lab 4 - Template file
+00000004:             ; 
+00000004:             ; print_char      equ     0               ; Define names to aid readability
+00000004:             ; stop            equ     2
+00000004:             ; print_str       equ     3
+00000004:             ; print_no        equ     4
+00000004:             ; 
+00000004:             ; cLF             equ     10              ; Line-feed character
+00000004:             ; 
+00000004:             ; 
 00000004:             ;         ;; ADR  SP, _stack      ; set SP pointing to the end of our stack
 00000004:             ;         
 00000004: EA000071    ;                 B       main

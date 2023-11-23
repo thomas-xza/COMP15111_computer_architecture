@@ -8,13 +8,11 @@
 
 ;;; ;;;   LOG OF WORKING CHANGES:
 ;;; ;;;   - hardcoded start of _stack address to 0x1000, to be able to find it with Bennett's GUI
-;;; ;;;	      - r_stack
-;;; ;;;       - aware that this is bad practice in real world
-;;; ;;;	      - don't want to screw with Bennett for 100000 hours
 ;;; ;;;       - can always be replaced with real stack without issues (e.g. at end of exercise)
 	
 _stack		equ	0x1000
 	
+	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
 	
 ; COMP15111 lab 4 - Template file
 
@@ -26,7 +24,6 @@ print_no	equ	4
 cLF		equ	10		; Line-feed character
 
 
-	MOV SP, #_stack		; set SP to point to hardcoded location of stack
 	;; ADR	SP, _stack	; set SP pointing to the end of our stack
 	
 		B	main
@@ -88,7 +85,7 @@ printAgeHistory
 	ADD	R4, R2, #1
 ;   age = 1;
 	MOV	R5, #1
-    MOV	R8, #1
+	MOV	R8, #1
 
 ; print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear))
 	ADRL	R0, wasborn
@@ -131,91 +128,92 @@ loop1	LDR	R0, pYear
 
 
 ;  print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
-		ADRL	R0, was
-		SVC	print_str
-		MOV	R0, R5
-		SVC	print_no
-		ADRL	R0, on
-		SVC	print_str
-		MOV	R0, R6
-		SVC	print_no
-		MOV	R0, #'/'
-		SVC	print_char
-		MOV	R0, R1
-		SVC	print_no
-		MOV	R0, #'/'
-		SVC	print_char
-		MOV	R0, R4
-		SVC	print_no
-		MOV	R0, #cLF
-		SVC	print_char
+	ADRL	R0, was
+	SVC	print_str
+	MOV	R0, R5
+	SVC	print_no
+	ADRL	R0, on
+	SVC	print_str
+	MOV	R0, R6
+	SVC	print_no
+	MOV	R0, #'/'
+	SVC	print_char
+	MOV	R0, R1
+	SVC	print_no
+	MOV	R0, #'/'
+	SVC	print_char
+	MOV	R0, R4
+	SVC	print_no
+	MOV	R0, #cLF
+	SVC	print_char
 
-		; year = year + 1
-		ADD	R4, R4, #1
-       ADD	R8, R4, #1
-       ADD	R9, R8, #1
-		; age = age + 1
-		ADD	R5, R5, #1
-		; //}
-		B	loop1
+	; year = year + 1
+	ADD	R4, R4, #1
+	ADD	R8, R4, #1
+	ADD	R9, R8, #1
+	; age = age + 1
+	ADD	R5, R5, #1
+	; //}
+	B	loop1
 
 end1
 ; this code does: if (bMonth == pMonth):
 ; for part 4, should be changed to:
 ; if (bMonth == pMonth and bDay == pDay):
 
-		LDR	R0, pMonth
-		CMP	R1, R0
-		BNE	else1
+	LDR	R0, pMonth
+	CMP	R1, R0
+	BNE	else1
 
 ; print("This person is " + str(age) + " today!")
-		ADRL	R0, is
-		SVC	print_str
-		MOV	R0, R5
-		SVC	print_no
-		ADRL	R0, today
-		SVC	print_str
-		MOV	R0, #cLF
-		SVC	print_char
+	ADRL	R0, is
+	SVC	print_str
+	MOV	R0, R5
+	SVC	print_no
+	ADRL	R0, today
+	SVC	print_str
+	MOV	R0, #cLF
+	SVC	print_char
 
 ; else
-		B	end2
+	B	end2
 else1
-; print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
-		ADRL	R0, willbe
-		SVC	print_str
-		MOV	R0, R5
-		SVC	print_no
-		ADRL	R0, on
-		SVC	print_str
-		MOV	R0, R6
-		SVC	print_no
-		MOV	R0, #'/'
-		SVC	print_char
-		MOV	R0, R1
-		SVC	print_no
-		MOV	R0, #'/'
-		SVC	print_char
-		MOV	R0, R4
-		SVC	print_no
-		MOV	R0, #cLF
-		SVC	print_char
+; print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year	))
+	ADRL	R0, willbe
+	SVC	print_str
+	MOV	R0, R5
+	SVC	print_no
+	ADRL	R0, on
+	SVC	print_str
+	MOV	R0, R6
+	SVC	print_no
+	MOV	R0, #'/'
+	SVC	print_char
+	MOV	R0, R1
+	SVC	print_no
+	MOV	R0, #'/'
+	SVC	print_char
+	MOV	R0, R4
+	SVC	print_no
+	MOV	R0, #cLF
+	SVC	print_char
 
 ; }// end of printAgeHistory
 end2
-        ;; POP	{R4}		; callee saved registers
-	;; POP	{R5}
-	;; POP	{R6}
+        	;; POP	{R4}		; callee saved registers
+		;; POP	{R5}
+		;; POP	{R6}
 
 	LDMFD SP!, {R4-R6}
 
 ;for part 1
 ;replace the POP instructions given above with one LDMFD instruction
 
-		MOV	PC, LR
+	MOV	PC, LR
 
-another		DEFB	"Another person",10,0
-		ALIGN
+another
+	DEFB	"Another person",10,0
+	ALIGN
 
 
 
@@ -254,13 +252,13 @@ main
 ; three parameters should be pushed to the stack with one STMFD instruction.
 
 
-		BL	printAgeHistory
+	BL	printAgeHistory
 
 
 
-		POP	{R0}			; Deallocate three 32-bit variables
-		POP	{R0}
-		POP	{R0}
+	POP	{R0}			; Deallocate three 32-bit variables
+	POP	{R0}
+	POP	{R0}
 
 ;for part 1
 ;Replace the three POP instructions mentioned above with a single instruction that doesn't involve memory access.
@@ -268,15 +266,15 @@ main
 
 
 ; print("Another person");
-		ADRL	R0, another
-		SVC	print_str
+	ADRL	R0, another
+	SVC	print_str
 
 ; printAgeHistory(13, 11, 2000)
-		MOV	R0, #13
-		PUSH	{R0}			; Stack first parameter
-		MOV	R0, #11
-		STR	R0, [SP, #-4]!		; An explicit coding of PUSH
-		MOV	R0, #2000
+	MOV	R0, #13
+	PUSH	{R0}			; Stack first parameter
+	MOV	R0, #11
+	STR	R0, [SP, #-4]!		; An explicit coding of PUSH
+	MOV	R0, #2000
         STR	R0, [SP, #-4]!		; An explicit coding of PUSH
 
 
@@ -284,14 +282,14 @@ main
 ;modify the above code (6 lines) to replace the three instructions (PUSH, STR and STR) with one STMFD instruction
 ; three parameters shuld be pushed to the stack with one STMFD instruction.
 
-
-		BL	printAgeHistory
+	
+	BL	printAgeHistory
 
 
 
         POP	{R0}			; Deallocate three 32-bit variables
-		POP	{R0}
-		POP	{R0}
+	POP	{R0}
+	POP	{R0}
 
 ;for part 1
 ;Replace the three POP instructions mentioned above with a single instruction that doesn't involve memory access.

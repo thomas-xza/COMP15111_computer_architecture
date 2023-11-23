@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 pDay = 23    #or whatever is today's date
 pMonth = 11  #or whatever is this month
 pYear = 2005 #or whatever is this year
