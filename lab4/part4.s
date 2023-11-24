@@ -118,7 +118,7 @@ printAgeHistory
 ;;;   R2 = bYear
 	
 ;;; local variables (callee-saved registers)
-;;;   R4 = year
+;;;   R4 = year_iter
 ;;;   R5 = age
 ;;;   R6 = bDay - originally R0	
 ;;;   R7 = comparison store
@@ -206,26 +206,35 @@ loop1
 
 
 
-;;;  Really, lower-case is more legible, I have some regrets.
-
+;;; ;;;  I feel that lower-case is more legible, I have some regrets.
 
 ;;; ;;;  Admittedly I didn't read the Python up until now, was disorienting.
 ;;; ;;;  Ahmed suggested there can be ways to shorten conditionals, in the lecture.
 ;;; ;;;  Thought about that in AgeHistoryPart4.c (a lot), AgeHistoryPart4.py for experiments.
+	
+;;; ;;;  But, there is none! I went barking up the wrong tree, but it
+;;; ;;;  is not the 1st time I desired a metric measurement of
+;;; ;;;  time...
 
-;;;  The iterating year is stored in r4
-;;;  The current 
+	
+;;; ;;;  Reg overview:
+;;; ;;;	     r1	reg
+;;; ;;;      
 	
 	
 ;;;  branch to end if:    year_iter > year_current 
 	
-	LDR	r0, pYear	; r0 = pYear
+	LDR	r0, pYear	; r0 = pYear (fixed year for comparison)
 	
-	CMP 	r4, r0		; compare r4 (iterating year) with r0 (year from memory)
-	BHI	end1		; branch to end1 if r4 > r0
-	
-	
-;;;  branch to end if:    month_bday < month_current
+	CMP 	r4, r0		; compare r4 (iterating year) with r0 (fixed year)
+	BHS	end1		; branch to end1 if r4 > r0
+
+	CMP 	r4, r0		; compare again (not sure if necessary)
+	MOVEQ	r7, #1		; if iter_year == fixed year ; then r7 = 1
+
+
+
+;;;  branch to end if:    year_iter == year_current && bday_month < month_current
 
 	LDR 	r0, pMonth	; r0 = pMonth
 	CMP	r1, r0		; compare r1 (iter month) with r0 (month from mem)

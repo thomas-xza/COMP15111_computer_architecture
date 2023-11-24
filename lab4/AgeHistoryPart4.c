@@ -67,27 +67,31 @@ printAgeHistory (day_birth, month_birth, bYear) {
       integration tests...  */
 
   /*  OK say we had epoch time, it would just be:
-          while iter less than epoch_time
+          while iter_epoch_time less than target_epoch_time
 
       Anyway, trying to iterate the idea out:
 
       1/1/20XX+1      |possibility_a|      |bday = possibility_b|    |possibility_c|      31/12/2023
 
-      Basically, we want to target possibility_a
+      Basically, we want to target: while possibility_a
 
       All the permutations that we want to run the loop:
 
       1. YYYY_HIT/M</...
       2. YYYY_HIT/M=/D<
 
-      Which would also translate to:
+      Then invert this, to the times we don't want to run the loop:
 
-      <Implementation of De Morgan's law here which might not be shorter to program>
+      1. If YYYY is too high
+      2. If YYYY is same BUT MM too high
+      3. If YYYY is same AND MM is same BUT DD is too high
+
+      Best I can think of is same idea as yesterday, a CMP op and then
+      store results in registers, then AND them.
 
       One advantage of Assembly programming, because it is so slow to implement ideas:
       forced to plan more, hack less.
-      Kind of maths-like, in that sense.
-      Truth is, maths is more timeless than any ISA.
+      Kind of maths-like, in that sense. Truth is, maths is more timeless than CS.
 
   */
   
