@@ -1,0 +1,66 @@
+#include stdlib.h
+
+int pDay = 23;
+
+int pMonth = 11;
+
+int pYear = 2005;
+
+
+void
+main() {
+    
+  printAgeHistory(pDay, pMonth, 2000);
+    
+  print("Another person");
+    
+  printAgeHistory(13, 11, 2000);
+
+}
+
+void
+printAgeHistory (bDay, bMonth, bYear) {
+
+/*  Takes birthday as parameters. */
+    
+  int year = bYear + 1;
+    
+  int age = 1;
+
+  /*  OK got a weird Python-C mix going on but anyway  */
+
+  /*  Output birthday  */
+
+  print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear));
+
+  /*  Compare birthday year with iterating year (on heap)  */
+
+  /*  This code is weird because, why does it look at the day or month????  */
+    
+  while ( (year < pYear) ||			 
+	  (year == pYear and bMonth < pMonth) || 
+	  (year == pYear and bMonth == pMonth and bDay < pDay) ) {
+    
+    printf("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year));
+          
+    year = year + 1;
+          
+    age = age + 1;
+          
+    if (bMonth == pMonth and bDay == pDay) {
+        
+      printf("This person is " + str(age) + " today!");
+	
+    }
+        
+    else {
+        
+      print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year));
+
+    }
+    
+  }
+
+}        
+
+main()

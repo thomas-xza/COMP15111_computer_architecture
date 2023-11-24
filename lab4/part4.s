@@ -34,6 +34,11 @@ cLF		equ	10		; Line-feed character
 ;;; ;;;     Explicit address to set stack to is better for debugging.
 
 ;;; ;;;   Boosted size of stack to write Assembly faster.
+
+;;; ;;;   - Wonder what the real-life cost of this would be?
+;;; ;;;		Negligible?
+;;; ;;;		1,000,000 x $0.03?
+;;; ;;;		1,000,000 x $0.0003?
 	
 	
 ;; 		DEFS	2048		; this chunk of memory is for the stack
@@ -182,6 +187,7 @@ printAgeHistory
 	MOV	R0, #cLF	; r0 = newline char
 	SVC	print_char	; out
 
+	
 ;;; ;;;  http://www-mdp.eng.cam.ac.uk/web/library/enginfo/mdp_micro/lecture3/lecture3-3-3.html
 	
 ; this code does: while year < pYear //{
@@ -190,16 +196,22 @@ loop1
 	;; LDR     R0, pYear
 	;; CMP     R4, R0
         ;; BHS     end1  ; Years are unsigned
-	
+
 ; for part 4, should be changed to:
 ; while year < pYear or
 ; (year == pYear and bMonth < pMonth) or
-; (year == pYear and bMonth == pMonth and bDay < pDay):	
+; (year == pYear and bMonth == pMonth and bDay < pDay):
+
+
+
+;;;  Really, lower-case is more legible, I have some regrets.
+
+
+;;; ;;;  Admittedly I didn't read the Python up until now.
+;;; ;;;  Ahmed suggested there can be ways to shorten conditionals, in the lecture.
+;;; ;;;  See AgeHistoryPart4.c for thoughts about that, and AgeHistoryPart4.py for experiments.
 
 	
-;;; Really, lower-case is more legible, I have some regrets.
-	
-
 ;;;  year < pyear
 	
 	LDR	r0, pYear	; r0 = pYear

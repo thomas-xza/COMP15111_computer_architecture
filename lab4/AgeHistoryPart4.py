@@ -1,6 +1,8 @@
-pDay = 23    #or whatever is today's date
+#!/usr/bin/env python3
+
+pDay = 24    #or whatever is today's date
 pMonth = 11  #or whatever is this month
-pYear = 2005 #or whatever is this year
+pYear = 2023 #or whatever is this year
 
 def printAgeHistory (bDay, bMonth, bYear):
     year = bYear + 1
@@ -10,12 +12,21 @@ def printAgeHistory (bDay, bMonth, bYear):
     while year < pYear or \
           (year == pYear and bMonth < pMonth) or \
           (year == pYear and bMonth == pMonth and bDay < pDay):
-          print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
-          year = year + 1
-          age = age + 1
+
+    # while year < pYear or \
+    #       (year == pYear and bMonth < pMonth) or \
+    #       (year == pYear and bMonth == pMonth and bDay < pDay):
+        
+        print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
+        year = year + 1
+        age = age + 1
+        
     if (bMonth == pMonth and bDay == pDay):
+        
         print("This person is " + str(age) + " today!")
+        
     else:
+        
         print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
 
 def main():

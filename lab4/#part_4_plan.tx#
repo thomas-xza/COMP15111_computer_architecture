@@ -1,0 +1,19 @@
+
+y = year
+a = pYear
+
+m = month
+b = pMonth
+
+d = day
+c = pDay
+
+
+Can this be simplified somehow?
+
+
+while y < a ||
+      (y == a && m < b) ||
+      (y == a && m == b && d < c):
+
+

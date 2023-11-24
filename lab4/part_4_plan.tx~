@@ -1,0 +1,9 @@
+
+y = year
+a = pYear
+
+m = month
+b = pMonth
+
+d = day
+c = pDay

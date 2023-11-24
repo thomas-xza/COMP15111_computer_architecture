@@ -69,7 +69,7 @@ printAgeHistory
 
 	;; PUSH	{R6}			; callee saves three registers
 	;; PUSH	{R5}
-m	;; PUSH	{R4}
+	;; PUSH	{R4}
 
 ;;;   Don't know what the exercise means "there are some other registers which
 ;;;   this method is using" because I don't agree!
