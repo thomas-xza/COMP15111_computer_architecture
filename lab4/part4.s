@@ -16,9 +16,9 @@
 ;;; ;;;	      the fixed set on the heap (pXXXX vars), and also I didn't test them either
 	
 
-_stack		equ	0x1000
+;; _stack		equ	0x1000
 	
-	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
+;; 	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
 	
 ; COMP15111 lab 4 - Template file
 
@@ -30,7 +30,7 @@ print_no	equ	4
 cLF		equ	10		; Line-feed character
 
 	
-	;; ADR	SP, _stack	; set SP pointing to the end of our stack
+	ADR	SP, _stack	; set SP pointing to the end of our stack
 	
 	B	main
 
@@ -46,8 +46,8 @@ cLF		equ	10		; Line-feed character
 ;;; ;;;		1,000,000 x $0.0003?
 	
 	
-;; 		DEFS	2048		; this chunk of memory is for the stack
-;; _stack					; This label is 'just after' the stack space
+		DEFS	2048		; this chunk of memory is for the stack
+_stack					; This label is 'just after' the stack space
 
 
 wasborn		DEFB	"This person was born on ",0
@@ -551,10 +551,10 @@ main
 
 
 	
-	;; ADRL	R0, _stack		; Have you balanced pushes & pops?
-	;; CMP	SP, R0			;
+	ADRL	R0, _stack		; Have you balanced pushes & pops?
+	CMP	SP, R0			;
 
-	CMP	SP, #_stack		; Have you balanced pushes & pops?
+	;; CMP	SP, #_stack		; Have you balanced pushes & pops?
 					; [hardcoded version]
 
 
