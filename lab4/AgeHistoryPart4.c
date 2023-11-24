@@ -43,14 +43,14 @@ printAgeHistory (day_birth, month_birth, bYear) {
   /*  Honestly I would've probably converted the whole thing to epoch time then compared integers.
       However, have read that epoch time has some flaws, allegedly!  */
   
-  /*  The sun does not revolve around the earth at a perfectly consistent rate,
+  /*  The earth does not revolve around the sun at a perfectly consistent rate,
       Maybe also the earth does not revolve on its axis at a perfectly consistent rate.  */
 
   /*  Basically the code is like:
 
-      1/1/20XX                    |loop_hit|                                         31/12/2022
-      1/1/20XX+1                  |loop_hit|      |bday|                             31/12/2023
-      1/1/20XX+2                  |loop_hit|                                         31/12/2024
+      1/1/20XX                    |loop_hit|                                         31/12/20XX
+      1/1/20XX+1                  |loop_hit|      |bday|                             31/12/20XX+1
+      1/1/20XX+2                  |loop_hit|                                         31/12/20XX+2
 
   */
 
@@ -71,7 +71,7 @@ printAgeHistory (day_birth, month_birth, bYear) {
 
       Anyway, trying to iterate the idea out:
 
-      1/1/20XX+1      |possibility_a|      |bday = possibility_b|    |possibility_c|      31/12/2023
+      1/1/20XX       |possibility_a|      |bday = possibility_b|    |possibility_c|      31/12/20XX
 
       Basically, we want to target: while possibility_a
 

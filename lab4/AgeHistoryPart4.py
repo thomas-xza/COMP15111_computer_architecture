@@ -33,7 +33,6 @@ def main():
     printAgeHistory(pDay, pMonth, 2000)
     print("Another person")
     printAgeHistory(13, 11, 2000)
-    printAgeHistory(30, 11, 2000)
 
 if __name__ == '__main__':
     main()
