@@ -48,9 +48,9 @@ printAgeHistory (day_birth, month_birth, bYear) {
 
   /*  Basically the code is like:
 
-      1/1/20XX                    |today|                                            31/12/2022
-      1/1/20XX+1                  |today|         |bday|                             31/12/2023
-      1/1/20XX+2                  |today|                                            31/12/2024
+      1/1/20XX                    |loop_hit|                                         31/12/2022
+      1/1/20XX+1                  |loop_hit|      |bday|                             31/12/2023
+      1/1/20XX+2                  |loop_hit|                                         31/12/2024
 
   */
 
@@ -66,10 +66,37 @@ printAgeHistory (day_birth, month_birth, bYear) {
       actually works, but I'm just going to take a rough guess to save
       time...  */
 
-  /*  OK say we had epoch time, it would just be: while iter less than epoch_time
-      So, iterate the idea out:
-          while year != target_year and month <= target_month and 
+  /*  OK say we had epoch time, it would just be:
+          while iter less than epoch_time
 
+      Anyway, trying to iterate the idea out:
+
+      1/1/20XX+1      |possibility_a|      |bday = possibility_b|    |possibility_c|      31/12/2023
+     
+      Does the Python loop run once more if it hits possibility_a?
+      The truth is: fuck knows. I hate it because I didn't write it,
+      so I don't know how it works, and now it is all in Assembly, it
+      can't be rewritten. And I feel like writing tests is overkill,
+      and not sure if it would help.
+
+      All the permutations that (I originally thought) we want to run the loop:
+
+      1. Y hit, M higher
+      2. Y hit, M hit, D higher or equal
+
+      Which would translate to:
+
+      while (year_iter <= year_current) AND
+            (month_current <= monday_bday) AND
+	    (day_current <= day_bday)
+
+      Perhaps???????
+
+      One advantage of Assembly programming, because it is so slow to implement ideas:
+      forced to plan more, hack less.
+
+  */
+  
   while (
 	 (year_iter < year_current) ||
 	 (year_iter == year_current and month_birth < month_current) ||

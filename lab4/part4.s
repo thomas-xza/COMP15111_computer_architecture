@@ -209,7 +209,7 @@ loop1
 
 ;;; ;;;  Admittedly I didn't read the Python up until now.
 ;;; ;;;  Ahmed suggested there can be ways to shorten conditionals, in the lecture.
-;;; ;;;  See AgeHistoryPart4.c for thoughts about that, and AgeHistoryPart4.py for experiments.
+;;; ;;;  Thought about that in AgeHistoryPart4.c (too many), AgeHistoryPart4.py for experiments.
 
 	
 ;;;  year < pyear

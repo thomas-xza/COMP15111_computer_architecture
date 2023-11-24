@@ -10,12 +10,12 @@ def printAgeHistory (bDay, bMonth, bYear):
 
     print("This person was born on " + str(bDay) + "/" + str(bMonth) + "/" + str(bYear))
 
-    ##  while (year <= pYear and bMonth <= pMonth and bDay < pDay):
+    while (year <= pYear and bMonth <= pMonth and bDay <= pDay):
+    
+    # while (year < pYear or \
+    #       (year == pYear and bMonth < pMonth) or \
+    #       (year == pYear and bMonth == pMonth and bDay < pDay):
 
-    while year < pYear or \
-          (year == pYear and bMonth < pMonth) or \
-          (year == pYear and bMonth == pMonth and bDay < pDay):
-        
         print("This person was " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year))
         year = year + 1
         age = age + 1
