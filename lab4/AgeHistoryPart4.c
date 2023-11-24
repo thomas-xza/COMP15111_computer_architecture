@@ -57,11 +57,19 @@ printAgeHistory (day_birth, month_birth, bYear) {
   /*  AgeHistoryPart4.py is a more accurate implementation of AgeHistoryPart1.py  */    
 
   /*  But I can't see any shortcuts around human time...  */
-  
-  while (
-	 (year_iter <= year_current and month_birth <= month_current and day_birth < day_current)
-	 ) {
-    
+
+  /*  I feel the desire to rewrite the overlying logic, but Assembly
+      is *INSANELY* time-consuming to rewrite.  */
+  /*  So, you have to be careful before writing Assembly...  */
+
+  /*  Really you need to write tests before changing this, to know it
+      actually works, but I'm just going to take a rough guess to save
+      time...  */
+
+  /*  OK say we had epoch time, it would just be: while iter less than epoch_time
+      So, iterate the idea out:
+          while year != target_year and month <= target_month and 
+
   while (
 	 (year_iter < year_current) ||
 	 (year_iter == year_current and month_birth < month_current) ||
