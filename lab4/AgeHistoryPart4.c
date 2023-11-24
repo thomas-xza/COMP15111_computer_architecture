@@ -89,6 +89,9 @@ printAgeHistory (day_birth, month_birth, bYear) {
       Best I can think of is same idea as yesterday, a CMP op and then
       store results in registers, then AND them.
 
+      And all the months are different lengths which means a fat case
+      statement - no simple multiplication of day of month and month.
+
       One advantage of Assembly programming, because it is so slow to implement ideas:
       forced to plan more, hack less.
       Kind of maths-like, in that sense. Truth is, maths is more timeless than CS.

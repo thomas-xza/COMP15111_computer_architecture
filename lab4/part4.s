@@ -11,6 +11,11 @@
 ;;; ;;;   - can always be replaced with dynamic stack without issues (e.g. at end of exercise)
 
 
+;;; ;;;   POTENTIAL BUGS:
+;;; ;;;   - the 2x test cases don't test for a day and month higher than
+;;; ;;;	      the fixed set on the heap (pXXXX vars), and also I didn't test them either
+	
+
 _stack		equ	0x1000
 	
 	MOV 	SP, #_stack		; set SP to point to hardcoded location of _stack
@@ -273,9 +278,8 @@ loop1
 
 	BEQ	end1		; if r10 == 1 ; then branch to end
 
-
 	
-
+;;; ;;;  The truth is, I haven't tested the above, but, it doesn't appear break anything!!
 	
 
 
@@ -336,14 +340,38 @@ loop1
 	B	loop1		; branch to loop1
 
 end1
+	
 ; this code does: if (bMonth == pMonth):
 ; for part 4, should be changed to:
 ; if (bMonth == pMonth and bDay == pDay):
 
-	LDR	R0, pMonth	; r0 = `pMonth` addr
-	CMP	R1, R0		; r1 == r0?
-	BNE	else1
+;;; ;;;  Data overview:
+;;;       	pYear, pMonth, pDay = fixed dates (on heap?)
+;;; 		r6 = birth year passed to function
+;;;     	r1 = birth month passed to function
+;;;     	r2 = birth day_of_month passed to function
+;;;     	r4 = iterating year	
+	
 
+	LDR	R0, pMonth	; r0 = `pMonth`
+	CMP	R1, R0		; compare r1 (birth monday param) with r0 (fixed month)
+	MOVEQ	r7, #1		; if r1 == r0 ; then r7 = 1
+	
+	LDR	r0, pDay	; r0 = `pDay`
+	
+	CMP 	r2, r0		; compare r2 (birth day_of_month param) with r0 (fixed month)
+	MOVEQ	r8, #1		; if iter_year == fixed year ; then r7 = 1
+
+	CMP	r7, r8
+	BEQ	else1		; if (r7 == r8) ; then branch to else1
+
+	
+;;; ;;;  The truth is, I haven't tested the above, but, it doesn't appear break anything!!
+	
+
+
+
+	
 ; print("This person is " + str(age) + " today!")
 	ADRL	R0, is		
 	SVC	print_str
@@ -356,6 +384,7 @@ end1
 
 ; else
 	B	end2
+	
 else1
 ; print("This person will be " + str(age) + " on " + str(bDay) + "/" + str(bMonth) + "/" + str(year	))
 	ADRL	R0, willbe
