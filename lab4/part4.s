@@ -53,7 +53,9 @@ today		DEFB	" today!",0
 willbe		DEFB	"This person will be ",0
 		ALIGN
 
-pDay		DEFW	23		;  pDay = 23    
+;;; ;;;  x_current dates
+	
+pDay		DEFW	24		;  pDay = 24    
 pMonth		DEFW	11		;  pMonth = 11  
 pYear		DEFW	2005		;  pYear = 2005 
 
@@ -207,41 +209,36 @@ loop1
 ;;;  Really, lower-case is more legible, I have some regrets.
 
 
-;;; ;;;  Admittedly I didn't read the Python up until now.
+;;; ;;;  Admittedly I didn't read the Python up until now, was disorienting.
 ;;; ;;;  Ahmed suggested there can be ways to shorten conditionals, in the lecture.
-;;; ;;;  Thought about that in AgeHistoryPart4.c (too many), AgeHistoryPart4.py for experiments.
+;;; ;;;  Thought about that in AgeHistoryPart4.c (a lot), AgeHistoryPart4.py for experiments.
 
+;;;  The iterating year is stored in r4
+;;;  The current 
 	
-;;;  year < pyear
+	
+;;;  branch to end if:    year_iter > year_current 
 	
 	LDR	r0, pYear	; r0 = pYear
 	
 	CMP 	r4, r0		; compare r4 (iterating year) with r0 (year from memory)
-	BHS	end1		; branch to end1 if r4 > r0
-
-	CMP 	r4, r0		; compare r4 (iterating year) with r0 (year from memory)
-	MOVEQ	r7, #1		; if equal, store 1 in r7 (for later)
+	BHI	end1		; branch to end1 if r4 > r0
 	
 	
-;;;  (year == pYear and bMonth < pMonth)
+;;;  branch to end if:    month_bday < month_current
 
 	LDR 	r0, pMonth	; r0 = pMonth
 	CMP	r1, r0		; compare r1 (iter month) with r0 (month from mem)
 	
-	MOVLT	r8, #1		; if r1 less than r0, store 1 in r8: bMonth < pMonth
-	MOVEQ	r9, #1		; if r1 equals r0, store 1 in r9: bMonth == pMonth
-
-	
-	AND	r0, r8, r7	; and the bits within r8 and r7
-	CMP     r0, #1		; compare r0 with 1
-	BEQ	end1		; branch if equal
+	BHI	end1		; branch if equal
 
 
-; (year == pYear and bMonth == pMonth and bDay < pDay):
+;;;  branch to end if:	 day_bday  day_current
 	
 	LDR 	r0, pDay	; r0 = pMonth
-	CMP	r1, r0		; compare r1 (iter month) with r0 (month from mem)
-	MOVLT	r8, #1		; if r1 less than r0, store 1 in r8
+	CMP	r6, r0		; compare r6 (iter month) with r0 (month from mem)
+	
+	BHI	end		; 
 
 	
 
